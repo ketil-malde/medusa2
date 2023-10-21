@@ -6,7 +6,7 @@ import argparse
 
 def validate(args):
     for f in args.FILE:
-        print(f'Validating "{f}":\t{"ok" if m.validate(f+"/manifest.xml") else "FAILED"}')
+        print(f'Validating "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description='Manage Medusa data sets')
