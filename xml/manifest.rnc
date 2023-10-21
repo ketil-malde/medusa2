@@ -1,0 +1,64 @@
+# RNC schema for specifying the format for MANIFEST.XML, defining metadata for a dataset
+start = element manifest
+      { attribute name { text }
+      , attribute created { date }
+      , attribute author { text }    # use email as ID?
+      , description
+      , specifics
+      , objects
+      }
+
+# A SHA1 hash, the basis for object identity
+hash = xsd:string { pattern = "[a-f0-9]*" length = "40" }
+
+# MIME types for data objects
+mime_t = text                   # must contain a slash?  Limit to list of valid types?
+
+# Specification for dates
+date = xsd:string { pattern = "(19|20)[0-9][0-9]-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|30|31)" }
+
+# Cruise IDs: Syyyynnn or S2023nnnnnn
+cruiseid = xsd:string { pattern = "((19|20|21|22)[0-9][0-9][0-9][0-9][0-9]|202[3-9][0-9][0-9][0-9][0-9][0-9][0-9])" }
+
+# Specifies a station
+station = element station { text } # cruise series, transect, cruiseid, station, platform
+                                              # or fixed station, plankton_gear, mesh_size ....
+					      # latitude/longtitude, timestamp
+
+# Short description of the dataset
+description = element description { freetext }
+
+# Datatype-specific section, currently only flowcam data
+specifics = flowcam-data
+
+# Flowcam specific information here
+flowcam-data = element flowcam-data
+    { station
+    , element flowcam-ctx { attribute sha1 { hash } }     # name is dataset name + .ctx
+    , element flowcam-summary { attribute sha1 { hash } } # name is dataset name + summary.txt
+    # ...
+    }
+
+# List of objects in the dataset
+objects =  element objects
+   { element object
+     { attribute path { text }         # file name, path relative to current dir
+     , attribute sha1 { hash }         # sha1 checksum
+     , attribute mimetype { mime_t }   # mime-type of the file (e.g. text/plain)
+     }*
+   }
+
+# Basic content, allows references to identified entities
+freetext = ( text 
+           | element species  
+	       { attribute tsn { xsd:string { pattern = "[1-9][0-9]*" }}
+	       , attribute sciname { xsd:string { pattern = "[A-Z][a-z]*( [a-z]*)?" }}?
+	       , text
+	     }
+           | element person { text }
+           | element location { text }
+	   | element dataset { attribute id { hash }, text }
+	   | element cite { attribute doi { text }?, text? } # maybe author, year etc?
+	   )*
+
+

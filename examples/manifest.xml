@@ -1,0 +1,14 @@
+<manifest name="test_data" created="2023-10-21" author="nobody@example.com">
+  <description>
+    This is a description of a dataset.
+  </description>
+  <flowcam-data>
+    <station />
+    <flowcam-ctx     sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+    <flowcam-summary sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+  </flowcam-data>
+  <objects>
+    <object path="file.txt" mimetype="text/plain" sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+    <object path="file.csv" mimetype="text/csv"   sha1="bff53e4d0ad179ef1418eebfa3ad38231feaca9b" />
+  </objects>
+</manifest>
