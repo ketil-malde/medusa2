@@ -4,8 +4,11 @@
   </description>
   <flowcam-data>
     <station />
-    <flowcam-ctx     sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
-    <flowcam-summary sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+    <flowcam-ctx         sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+    <flowcam-run-summary sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+    <flowcam-edg         sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+    <flowcam-lst         sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
+    <flowcam-data-export sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
   </flowcam-data>
   <objects>
     <object path="file.txt" mimetype="text/plain" sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />

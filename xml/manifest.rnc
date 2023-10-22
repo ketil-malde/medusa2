@@ -31,12 +31,15 @@ description = element description { freetext }
 # Datatype-specific section, currently only flowcam data
 specifics = flowcam-data
 
-# Flowcam specific information here
+# Flowcam specific information:
+#   https://docs.google.com/document/d/11n3qeoZctYqzwrH22xi2kACa5ij3uWPFH5q99cOaWZU/e
 flowcam-data = element flowcam-data
     { station
-    , element flowcam-ctx { attribute sha1 { hash } }     # name is dataset name + .ctx
-    , element flowcam-summary { attribute sha1 { hash } } # name is dataset name + summary.txt
-    # ...
+    , element flowcam-ctx         { attribute sha1 { hash } } # name is dataset name + .ctx
+    , element flowcam-run-summary { attribute sha1 { hash } } # name is dataset name + summary.txt
+    , element flowcam-edg         { attribute sha1 { hash } }
+    , element flowcam-lst         { attribute sha1 { hash } }
+    , element flowcam-data-export { attribute sha1 { hash } }
     }
 
 # List of objects in the dataset

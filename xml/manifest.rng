@@ -59,27 +59,40 @@
   <define name="specifics">
     <ref name="flowcam-data"/>
   </define>
-  <!-- Flowcam specific information here -->
+  <!--
+    Flowcam specific information:
+      https://docs.google.com/document/d/11n3qeoZctYqzwrH22xi2kACa5ij3uWPFH5q99cOaWZU/e
+  -->
   <define name="flowcam-data">
     <element name="flowcam-data">
-      <group>
-        <ref name="station"/>
-        <element name="flowcam-ctx">
-          <attribute name="sha1">
-            <ref name="hash"/>
-          </attribute>
-        </element>
-        <!-- name is dataset name + .ctx -->
-        <element name="flowcam-summary">
-          <attribute name="sha1">
-            <ref name="hash"/>
-          </attribute>
-        </element>
-      </group>
-      <!--
-        name is dataset name + summary.txt
-        ...
-      -->
+      <ref name="station"/>
+      <element name="flowcam-ctx">
+        <attribute name="sha1">
+          <ref name="hash"/>
+        </attribute>
+      </element>
+      <!-- name is dataset name + .ctx -->
+      <element name="flowcam-run-summary">
+        <attribute name="sha1">
+          <ref name="hash"/>
+        </attribute>
+      </element>
+      <!-- name is dataset name + summary.txt -->
+      <element name="flowcam-edg">
+        <attribute name="sha1">
+          <ref name="hash"/>
+        </attribute>
+      </element>
+      <element name="flowcam-lst">
+        <attribute name="sha1">
+          <ref name="hash"/>
+        </attribute>
+      </element>
+      <element name="flowcam-data-export">
+        <attribute name="sha1">
+          <ref name="hash"/>
+        </attribute>
+      </element>
     </element>
   </define>
   <!-- List of objects in the dataset -->

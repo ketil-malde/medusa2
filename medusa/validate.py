@@ -18,13 +18,16 @@ validate_type = {
 }
 
 def validate(dataset):
-    status = None
+    status = True
     libdir = dirname(dirname(__file__))+'/xml/'
     with open(f'{libdir}/manifest.rng', 'r') as f:
         schema = etree.RelaxNG(etree.parse(f))
-    with open(f'{dataset }/manifest.xml', 'r') as f:
+    with open(f'{dataset}/manifest.xml', 'r') as f:
         doc = etree.parse(f)
-    status = schema.validate(doc)
+    if not schema.validate(doc):
+        print('Metadata file "{dataset}/manifest.xml": validation failed')
+        print(schema.error_log)
+        status = False
 
     # data-specific validation (e.g. flowcam)
 
