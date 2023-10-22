@@ -3,6 +3,20 @@ from os.path import dirname
 import mmap
 import hashlib
 
+def validate_text_plain(fh):
+    # check correct utf-8 text
+    pass
+
+def validate_csv(fh):
+    # check number of fields is constant
+    pass
+
+# Table of content validation functions
+validate_type = {
+    'text/plain' : validate_text_plain,
+    'text/csv'   : validate_csv
+}
+
 def validate(dataset):
     status = None
     libdir = dirname(dirname(__file__))+'/xml/'
@@ -14,20 +28,24 @@ def validate(dataset):
 
     # data-specific validation (e.g. flowcam)
 
-    # Check object hashes:
     # madvise(mmap.MADV_SEQUENTIAL)
+    # Check objects
     for obj in doc.iter('object'):
         fname = f'{dataset}/{obj.attrib["path"]}'
+        ftype = obj.attrib['mimetype']
+        fhash = obj.attrib['sha1']
         with open(fname, 'rb') as fh:
             # is this effcient?  newer hashlib supports file_digest, probably better
             with mmap.mmap(fh.fileno(), length=0, access=mmap.ACCESS_READ) as fm:
                 h = hashlib.sha1(fm).hexdigest()
-                if h != obj.attrib['sha1']:
-                    print('ERROR: checksum mismatch for {fname}, got {h}, wanted {obj.attrib["sha1"]}!')
+                if h != fhash:
+                    print('ERROR: checksum mismatch for {fname}, got {h}, wanted {fhash}!')
                     status = False
                 else:
                     print(f'   "{fname}" - checksum OK')
-                # compare sha1.hexdigest() to the stored value
-                
+
+                # check file contents of fh/fm
+                validate_type[ftype](fm)
+
     return status
     
