@@ -2,6 +2,7 @@ from lxml import etree
 from os.path import dirname
 import mmap
 import hashlib
+import rnc2rng
 
 def validate_text_plain(fh):
     # check correct utf-8 text
@@ -20,10 +21,9 @@ validate_type = {
 def validate(dataset):
     status = True
     libdir = dirname(dirname(__file__))+'/xml/'
-    with open(f'{libdir}/manifest.rng', 'r') as f:
-        schema = etree.RelaxNG(etree.parse(f))
-    with open(f'{dataset}/manifest.xml', 'r') as f:
-        doc = etree.parse(f)
+    rngstr = rnc2rng.dumps(rnc2rng.load(f'{libdir}/manifest.rnc')).encode()
+    schema = etree.RelaxNG(etree.fromstring(rngstr))
+    doc = etree.parse(f'{dataset}/manifest.xml')
     if not schema.validate(doc):
         print('Metadata file "{dataset}/manifest.xml": validation failed')
         print(schema.error_log)

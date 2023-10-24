@@ -1,5 +1,5 @@
-trang xml/manifest.rnc xml/manifest.rng
+trang xml/manifest.rnc /tmp/manifest.rng
 for a in examples/*; do
     echo Validating: $a
-    jing xml/manifest.rng $a/manifest.xml
+    jing /tmp/manifest.rng $a/manifest.xml
 done
