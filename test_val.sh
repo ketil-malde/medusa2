@@ -1,2 +1,5 @@
 trang xml/manifest.rnc xml/manifest.rng
-jing xml/manifest.rng examples/manifest.xml
+for a in examples/*; do
+    echo Validating: $a
+    jing xml/manifest.rng $a/manifest.xml
+done
