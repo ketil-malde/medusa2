@@ -3,7 +3,10 @@
     This is a description of a dataset.
   </description>
   <flowcam-data>
-    <station />
+    <plankton-sample>
+      <ctd-station cruise-id="S2022321" station="123" />
+      <location lat="60.00" lon="-0.666" />
+    </plankton-sample>
     <flowcam-ctx         sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
     <flowcam-run-summary sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
     <flowcam-edg         sha1="202712ad248cc7617ffdcc6991358bf98debcb25" />
