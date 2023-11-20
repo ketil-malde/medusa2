@@ -8,8 +8,8 @@ start = element manifest
       , objects
       }
 
-# A SHA1 hash, the basis for object identity
-hash = xsd:string { pattern = "[a-f0-9]*" length = "40" }
+# A SHA256 hash, the basis for object identity
+hash = xsd:string { pattern = "[a-f0-9]*" length = "64" }
 
 # MIME types for data objects
 mime_t = text                   # must contain a slash?  Limit to list of valid types?
@@ -25,6 +25,8 @@ ctd-station = element ctd-station
     { attribute cruise-id { cruiseid }
     , attribute station { xsd:integer }
     }
+
+fixed-station = element fixed-station { text } # todo: one from a list
 
 trawl-station = element trawl-station
     { attribute cruise-id { cruiseid }
@@ -54,13 +56,13 @@ process = element process
     , attribute version { text }?
     }
 
-source-data = element source-data { attribute sha1 { hash }}  # maybe role?
+source-data = element source-data { attribute sha256 { hash }}  # maybe role?
 
 # Datatype-specific section, currently only flowcam data
 specifics = flowcam-data
 
 plankton-sample = element plankton-sample
-    { ctd-station
+    { (ctd-station | fixed-station)
     , location?
     }
 
@@ -68,18 +70,18 @@ plankton-sample = element plankton-sample
 #   https://docs.google.com/document/d/11n3qeoZctYqzwrH22xi2kACa5ij3uWPFH5q99cOaWZU/e
 flowcam-data = element flowcam-data
     { plankton-sample
-    , element flowcam-ctx         { attribute sha1 { hash } } # name is dataset name + .ctx
-    , element flowcam-run-summary { attribute sha1 { hash } } # name is dataset name + summary.txt
-    , element flowcam-edg         { attribute sha1 { hash } }
-    , element flowcam-lst         { attribute sha1 { hash } }
-    , element flowcam-data-export { attribute sha1 { hash } }
+    , element flowcam-ctx         { attribute sha256 { hash } } # name is dataset name + .ctx
+    , element flowcam-run-summary { attribute sha256 { hash } } # name is dataset name + summary.txt
+    , element flowcam-edg         { attribute sha256 { hash } }
+    , element flowcam-lst         { attribute sha256 { hash } }
+    , element flowcam-data-export { attribute sha256 { hash } }
     }
 
 # List of objects in the dataset
 objects =  element objects
    { element object
      { attribute path { text }         # file name, path relative to current dir
-     , attribute sha1 { hash }         # sha1 checksum
+     , attribute sha256 { hash }       # sha256 checksum
      , attribute mimetype { mime_t }   # mime-type of the file (e.g. text/plain)
      }*
    }

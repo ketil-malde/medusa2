@@ -12,10 +12,15 @@ def validate_csv(fh):
     # check number of fields is constant
     pass
 
+def validate_tiff(fh):
+    # verify image
+    pass
+
 # Table of content validation functions
 validate_type = {
     'text/plain' : validate_text_plain,
-    'text/csv'   : validate_csv
+    'text/csv'   : validate_csv,
+    'image/tiff' : validate_tiff
 }
 
 def validate(dataset):
@@ -25,7 +30,7 @@ def validate(dataset):
     schema = etree.RelaxNG(etree.fromstring(rngstr))
     doc = etree.parse(f'{dataset}/manifest.xml')
     if not schema.validate(doc):
-        print('Metadata file "{dataset}/manifest.xml": validation failed')
+        print(f'Metadata file "{dataset}/manifest.xml": validation failed')
         print(schema.error_log)
         status = False
 
@@ -36,11 +41,11 @@ def validate(dataset):
     for obj in doc.iter('object'):
         fname = f'{dataset}/{obj.attrib["path"]}'
         ftype = obj.attrib['mimetype']
-        fhash = obj.attrib['sha1']
+        fhash = obj.attrib['sha256']
         with open(fname, 'rb') as fh:
             # is this effcient?  newer hashlib supports file_digest, probably better
             with mmap.mmap(fh.fileno(), length=0, access=mmap.ACCESS_READ) as fm:
-                h = hashlib.sha1(fm).hexdigest()
+                h = hashlib.sha256(fm).hexdigest()
                 if h != fhash:
                     print('ERROR: checksum mismatch for {fname}, got {h}, wanted {fhash}!')
                     status = False

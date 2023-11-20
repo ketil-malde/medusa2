@@ -1,0 +1,32 @@
+Run:
+	Mode:  AutoImage
+	Recalibrations:  0
+	Stop Reason:  User Terminated
+	Fluid Volume Imaged: 2108.6735 ml
+	Particle Count: 28219
+
+Images:
+	Total:  2416
+	Used:  2416
+	Percentage Used:  100.00%
+	Particles Per Used Image:  11.68
+	Particles Per Image:  11.68
+	Particles Per Image:  11.68
+	Frame Rate:  8.92 fps
+	Intensity Mean:  162.48
+	Intensity Min:  119.82
+	Intensity Max:  164.72
+
+Date/Time:
+	Start:  2021-10-21 03:26:17
+	End:  2021-10-21 03:30:51
+	Sampling Time:  00:04:30
+
+Environment:
+	Software: VisualSpreadsheet 4.13.2
+	Magnification: 12X
+	Calibration Factor: 9.3032
+	GumStix Firmware: 23
+	Calibration Factor: 9.3032
+	SerialNo:  10424
+	Number of Processors: 8

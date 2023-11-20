@@ -1,3 +1,5 @@
+# Validate example data using jing and trang
+
 trang xml/manifest.rnc /tmp/manifest.rng
 for a in examples/*; do
     echo Validating: $a
