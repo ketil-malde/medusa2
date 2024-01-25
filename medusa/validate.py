@@ -1,8 +1,7 @@
 from lxml import etree
 from os.path import dirname
-import mmap
-import hashlib
 import rnc2rng
+from medusa import util
 
 def validate_text_plain(fh):
     # check correct utf-8 text
@@ -36,24 +35,22 @@ def validate(dataset):
 
     # data-specific validation (e.g. flowcam)
 
-    # madvise(mmap.MADV_SEQUENTIAL)
-    # Check objects
+
+    # Check all declared objects
     for obj in doc.iter('object'):
         fname = f'{dataset}/{obj.attrib["path"]}'
         ftype = obj.attrib['mimetype']
         fhash = obj.attrib['sha256']
         with open(fname, 'rb') as fh:
-            # is this effcient?  newer hashlib supports file_digest, probably better
-            with mmap.mmap(fh.fileno(), length=0, access=mmap.ACCESS_READ) as fm:
-                h = hashlib.sha256(fm).hexdigest()
-                if h != fhash:
-                    print('ERROR: checksum mismatch for {fname}, got {h}, wanted {fhash}!')
-                    status = False
-                else:
-                    print(f'   "{fname}" - checksum OK')
+            h = util.get_hash(fh)
+            if h != fhash:
+                print('ERROR: checksum mismatch for {fname}, got {h}, wanted {fhash}!')
+                status = False
+            else:
+                print(f'   "{fname}" - checksum OK')
 
-                # check file contents of fh/fm
-                validate_type[ftype](fm)
+            # check file contents of fh
+            validate_type[ftype](fh)
 
     return status
     
