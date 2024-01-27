@@ -17,7 +17,7 @@
 	    mimetype="image/tiff" /> 
     <object sha256="7f9a3d1e47052b6b6bf10bf4eb15081a53eec46a39b35ea5f77477a371ada5d2"
 	    path="294-032502 st2 4 juni 2021 50 m halv.ctx"
-            mimetype="text/plux" />
+            mimetype="text/plain" />
     <object sha256="279025630b1956b55232f4efac9bb01c63bb333f010a59ffc3e87291178c60de"
 	    path="294-032502 st2 4 juni 2021 50 m halv_run_summary.txt"
 	    mimetype="text/plain"  />
