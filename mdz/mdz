@@ -4,18 +4,27 @@ import medusa as m
 import sys
 import argparse
 
+usage = 'Usage: mdz validate DIR'
+
 def validate(args):
     for f in args.FILE:
         print(f'Dataset "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
 
 if __name__ == "__main__":
+    if len(sys.argv) <= 1:
+        print(usage)
+        exit(0)
+
     p = argparse.ArgumentParser(description='Manage Medusa data sets')
     ps = p.add_subparsers()
+    ps.default = 'validate'
 
     # Validation
     val = ps.add_parser('validate', description='Validate a data set')
     val.add_argument('FILE', nargs='+', help='data set directory.')
     val.set_defaults(func = validate)
+
+    # Run
     args = p.parse_args()
     args.func(args)
     
