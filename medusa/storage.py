@@ -20,6 +20,10 @@ class FileStorage:
         '''Directory prefix for storing hashes'''
         return(fhash[:3], fhash[3:6])
 
+    def exists(self, fhash):
+        fname = path.join(self._repo, self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
+        return path.exists(fname)
+
     def put(self, filename, verify_exists=True):
         with open(filename, 'rb') as fh:
             fhash = util.get_hash(fh)

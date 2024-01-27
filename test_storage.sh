@@ -4,7 +4,10 @@ import medusa.datasets as md
 import medusa.storage as ms
 
 D = md.Datasets(ms.FileStorage('/tmp/medusa'))
-D.insert('examples/flowcam1')
-
+h = D.insert('examples/flowcam1')
+D.export(h, 'tmp_export')
 EOF
-tree -d /tmp/medusa
+
+tree tmp_export
+rm -rf tmp_export
+

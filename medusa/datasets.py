@@ -27,8 +27,14 @@ class Datasets:
             assert newhash == fhash
         return self._store.put(f'{dataset}/manifest.xml')
 
-    def extract(self, dhash, dname=None):
-        # create dir
-        # extract metadata file
-        # extract all objects
-        pass
+    def export(self, dhash, dname=None):
+        if self._store.exists(dhash):
+            if not dname: dname = dhash
+            os.mkdir(dname)
+            self._store.get(dhash, f'{dname}/manifest.xml')
+            doc = etree.parse(f'{dname}/manifest.xml')
+            for obj in doc.iter('object'):
+                fname = f'{dname}/{obj.attrib["path"]}'
+                fhash = obj.attrib['sha256']
+                self._store.get(fhash, fname)
+                # todo: make subdirs?
