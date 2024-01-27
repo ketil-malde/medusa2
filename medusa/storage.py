@@ -1,7 +1,7 @@
 # Define MDZREPO - file path, scp directory, or ipfs server
 # Maybe make different classes with get/put functions?
 
-import util
+import medusa.util as util
 import sys
 from os import path, makedirs, symlink
 import shutil
