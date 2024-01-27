@@ -69,13 +69,7 @@ plankton-sample = element plankton-sample
 # Flowcam specific information:
 #   https://docs.google.com/document/d/11n3qeoZctYqzwrH22xi2kACa5ij3uWPFH5q99cOaWZU/e
 flowcam-data = element flowcam-data
-    { plankton-sample
-    , element flowcam-ctx         { attribute sha256 { hash } } # name is dataset name + .ctx
-    , element flowcam-run-summary { attribute sha256 { hash } } # name is dataset name + summary.txt
-    , element flowcam-edg         { attribute sha256 { hash } }
-    , element flowcam-lst         { attribute sha256 { hash } }
-    , element flowcam-data-export { attribute sha256 { hash } }
-    }
+    { plankton-sample }
 
 # List of objects in the dataset
 objects =  element objects
@@ -98,5 +92,3 @@ freetext = ( text
 	   | element dataset { attribute id { hash }, text }
 	   | element cite { attribute doi { text }?, text? } # maybe author, year etc?
 	   )*
-
-

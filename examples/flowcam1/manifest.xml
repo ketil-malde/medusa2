@@ -7,11 +7,6 @@
       <ctd-station cruise-id="S2022321" station="123" />
       <location lat="60.00" lon="-0.666" />
     </plankton-sample>
-    <flowcam-ctx         sha256="7f9a3d1e47052b6b6bf10bf4eb15081a53eec46a39b35ea5f77477a371ada5d2" />
-    <flowcam-run-summary sha256="279025630b1956b55232f4efac9bb01c63bb333f010a59ffc3e87291178c60de" />
-    <flowcam-edg         sha256="3ea7994bf92e17be3b6c8de0e6b3063b839a50bc8b59db0d88d977bce646a4bb" />
-    <flowcam-lst         sha256="a36fd8128d55c8b892284d26d498f1f287b5e914d2098cb5f77302df9acfc3b6" />
-    <flowcam-data-export sha256="a65d077b5883646204cf655615760bde036e2fe3b3205f990581349967689a7d" />
   </flowcam-data>
   <objects>
     <object sha256="f0449e5b41d6ede465140f2a695ac461cc2f73ffe4fe9e3d7ec27ddb4bd56725"
@@ -20,6 +15,20 @@
     <object sha256="748f06f0660cccf0b95b591ced8824aa22342c8d7bd03b88b13b0b290caa0e8b"
 	    path="cal_image_000001.tif"
 	    mimetype="image/tiff" /> 
+    <object sha256="7f9a3d1e47052b6b6bf10bf4eb15081a53eec46a39b35ea5f77477a371ada5d2"
+	    path="294-032502 st2 4 juni 2021 50 m halv.ctx"
+            mimetype="text/plux" />
+    <object sha256="279025630b1956b55232f4efac9bb01c63bb333f010a59ffc3e87291178c60de"
+	    path="294-032502 st2 4 juni 2021 50 m halv_run_summary.txt"
+	    mimetype="text/plain"  />
+    <object sha256="3ea7994bf92e17be3b6c8de0e6b3063b839a50bc8b59db0d88d977bce646a4bb"
+	    path="294-032502 st2 4 juni 2021 50 m halv.edg"
+            mimetype="text/csv" />
+    <object sha256="a36fd8128d55c8b892284d26d498f1f287b5e914d2098cb5f77302df9acfc3b6"
+	    path="294-032502 st2 4 juni 2021 50 m halv.lst"
+            mimetype="text/plain" />
+    <object sha256="a65d077b5883646204cf655615760bde036e2fe3b3205f990581349967689a7d"
+	    path="data_export.csv"
+	    mimetype="text/csv" />
   </objects>
 </manifest>
-
