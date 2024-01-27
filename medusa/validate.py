@@ -50,7 +50,12 @@ def validate(dataset):
                 print(f'   "{fname}" - checksum OK')
 
             # check file contents of fh
-            validate_type[ftype](fh)
+            if ftype in validate_type:
+                validate_type[ftype](fh)
+            else:
+                print(f'Unknown file type "{ftype}" - ignoring.')
+
+    # TODO: Check all files present are declared (or warn)
 
     return status
     
