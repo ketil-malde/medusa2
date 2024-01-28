@@ -9,12 +9,8 @@ import shutil
 class FileStorage:
     '''Implements a file-based storage for objects'''
 
-    def __init__(self, repo=None):
-        if repo:
-            self._repo = repo
-        elif 'MDZREPO' in sys.env:
-            self._repo = sys.env['MDZREPO']
-        # assert repo exists?
+    def __init__(self, repo):
+        self._repo = repo
 
     def hash2dir(self, fhash):
         '''Directory prefix for storing hashes'''

@@ -28,7 +28,9 @@ class Datasets:
         return self._store.put(f'{dataset}/manifest.xml')
 
     def export(self, dhash, dname=None):
-        if self._store.exists(dhash):
+        if not self._store.exists(dhash):
+            error(f'Hash {dhash} not found in repository.')
+        else:
             if not dname: dname = dhash
             os.mkdir(dname)
             self._store.get(dhash, f'{dname}/manifest.xml')
@@ -38,3 +40,4 @@ class Datasets:
                 fhash = obj.attrib['sha256']
                 self._store.get(fhash, fname)
                 # todo: make subdirs?
+            # todo: mv from dhash to dataset name?

@@ -2,13 +2,36 @@
 
 import medusa as m
 import sys
+import os
 import argparse
+from medusa.util import error
+from medusa.storage import FileStorage  # should be redundant?
+from medusa.datasets import Datasets
 
-usage = 'Usage: mdz validate DIR'
+usage = 'Usage: mdz {validate|import|export} DIR'
+
+def get_storage(repo=None):
+    if not repo and 'MDZREPO' in os.environ:
+            repo = os.environ['MDZREPO']
+    if not repo: error('No repository specified (set $MDZREPO)')
+    return Datasets(FileStorage(repo))
 
 def validate(args):
     for f in args.FILE:
         print(f'Dataset "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
+
+def insert(args):
+    db = get_storage()
+    for f in args.FILE:
+        print(f'Importing "{f}"')
+        h = db.insert(f)
+        print(f'Hash: {h}')
+
+def export(args):
+    db = get_storage()
+    for h in args.hashes:
+        print(f'Exporting "{h}"')
+        db.export(h)
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
@@ -17,12 +40,21 @@ if __name__ == "__main__":
 
     p = argparse.ArgumentParser(description='Manage Medusa data sets')
     ps = p.add_subparsers()
-    ps.default = 'validate'
+    # ps.default = 'usage'
 
     # Validation
     val = ps.add_parser('validate', description='Validate a data set')
-    val.add_argument('FILE', nargs='+', help='data set directory.')
+    val.add_argument('FILE', nargs='+', help='data set directories.')
     val.set_defaults(func = validate)
+
+    # Importing
+    imp = ps.add_parser('import', description='Import datasets into storage')
+    imp.add_argument('FILE', nargs='+', help='data set directories.')
+    imp.set_defaults(func = insert)
+    
+    exp = ps.add_parser('export', description='Export datasets into storage')
+    exp.add_argument('hashes', nargs='+', help='data set hashes.')
+    exp.set_defaults(func = export)
 
     # Run
     args = p.parse_args()

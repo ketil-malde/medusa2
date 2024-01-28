@@ -8,5 +8,5 @@ def get_hash(fhandle):
         return hashlib.sha256(fm).hexdigest()
 
 def error(string):
-    print('Error: {string}')
+    print(f'Error: {string}')
     exit(-1)
