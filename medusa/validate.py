@@ -1,28 +1,29 @@
 from lxml import etree
 from os.path import dirname
 import rnc2rng
-from medusa import util
+from medusa.util import get_hash, error, warn
 
 def validate_text_plain(fh):
     # check correct utf-8 text
-    pass
+    return True
 
 def validate_csv(fh):
     # check number of fields is constant
-    pass
+    return True
 
 def validate_tiff(fh):
     # verify image
-    pass
+    return True
 
 # Table of content validation functions
-validate_type = {
+validate_file = {
     'text/plain' : validate_text_plain,
     'text/csv'   : validate_csv,
     'image/tiff' : validate_tiff
 }
 
-def validate(dataset):
+def validate(dataset, quick=False, datatype=None):
+    '''Validate a dataset.  Set quick to stop at first error.'''
     status = True
     libdir = dirname(dirname(__file__))+'/xml/'
     rngstr = rnc2rng.dumps(rnc2rng.load(f'{libdir}/manifest.rnc')).encode()
@@ -32,9 +33,9 @@ def validate(dataset):
         print(f'Metadata file "{dataset}/manifest.xml": validation failed')
         print(schema.error_log)
         status = False
+        if quick: return False
 
-    # data-specific validation (e.g. flowcam)
-
+    # TODO: data-specific validation (e.g. flowcam)
 
     # Check all declared objects
     for obj in doc.iter('object'):
@@ -42,18 +43,22 @@ def validate(dataset):
         ftype = obj.attrib['mimetype']
         fhash = obj.attrib['sha256']
         with open(fname, 'rb') as fh:
-            h = util.get_hash(fh)
+            h = get_hash(fh)
             if h != fhash:
                 print('ERROR: checksum mismatch for {fname}, got {h}, wanted {fhash}!')
                 status = False
+                if quick: return False
             else:
                 print(f'   "{fname}" - checksum OK')
 
             # check file contents of fh
-            if ftype in validate_type:
-                validate_type[ftype](fh)
+            if ftype in validate_file:
+                if not validate_file[ftype](fh):
+                    error(f'File format validation failed for {fname} as {ftype}.', stop=quick)
+                    status = False
+                    if quick: return False
             else:
-                print(f'Unknown file type "{ftype}" - ignoring.')
+                warn(f'Unknown file type "{ftype}" for file "{fname}" - ignoring.')
 
     # TODO: Check all files present are declared (or warn)
 
