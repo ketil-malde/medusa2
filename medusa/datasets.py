@@ -14,10 +14,10 @@ class Datasets:
     def insert(self, dataset):
         # verify metadata file
         if not os.path.exists(dataset):
-            error(f'No such directory: {directory}')
+            error(f'No such directory: {dataset}.')
         # validate dir
         if not validate(dataset, quick=True):
-            error(f'Validation failed')
+            error(f'Validation failed for {dataset}.')
 
         # iterate over all objects and store them
         doc = etree.parse(f'{dataset}/manifest.xml')

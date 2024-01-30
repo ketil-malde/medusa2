@@ -63,4 +63,3 @@ def validate(dataset, quick=False, datatype=None):
     # TODO: Check all files present are declared (or warn)
 
     return status
-    

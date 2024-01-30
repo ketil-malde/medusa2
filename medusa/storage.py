@@ -1,5 +1,4 @@
 import medusa.util as util
-import sys
 from os import path, makedirs, symlink
 import shutil
 
