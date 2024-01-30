@@ -3,12 +3,13 @@
 # use ledger.py (todo) to manage records
 from medusa.validate import validate
 from medusa.util import error
+from medusa.storage import mkstorage
 from lxml import etree
 import os
 
 class Datasets:
-    def __init__(self, storage):
-        self._store = storage
+    def __init__(self, repo):
+        self._store = mkstorage(repo)
 
     def insert(self, dataset):
         # verify metadata file

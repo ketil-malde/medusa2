@@ -1,10 +1,15 @@
-# Define MDZREPO - file path, scp directory, or ipfs server
-# Maybe make different classes with get/put functions?
-
 import medusa.util as util
 import sys
 from os import path, makedirs, symlink
 import shutil
+
+# Should this be a (base) class?
+def mkstorage(repo):
+    '''Selects storage based on specifier'''
+    # repo starts with "HTTP" or "HTTPS"
+    # repo starts with "IPFS"
+    # otherwise
+    return FileStorage(repo)
 
 class FileStorage:
     '''Implements a file-based storage for objects'''
