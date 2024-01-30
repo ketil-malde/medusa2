@@ -16,7 +16,7 @@ class Datasets:
         if not os.path.exists(dataset):
             error(f'No such directory: {directory}')
         # validate dir
-        if not validate(dataset):
+        if not validate(dataset, quick=True):
             error(f'Validation failed')
 
         # iterate over all objects and store them
