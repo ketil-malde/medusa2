@@ -4,8 +4,8 @@ import medusa.storage as ms
 
 S = ms.FileStorage('/tmp/mdz')
 
-S.put('test.sh')
-h=S.put('test.sh')
+S.put('test_repo.sh')
+h=S.put('test_repo.sh')
 S.get(h, 'tmp_link')
 
 EOF

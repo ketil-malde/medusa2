@@ -1,13 +1,15 @@
-<manifest name="test_data" created="2023-10-21" author="nobody@example.com">
+<manifest name="test_data" created="2023-10-21" author="nobody@example.com" dataclass="flowcam" >
   <description>
-    This is a description of a dataset.
+    This is a description of a flowcam dataset.
   </description>
-  <flowcam-data>
+  <provenance>
+    Data sample information:
     <plankton-sample>
       <ctd-station cruise-id="S2022321" station="123" />
       <location lat="60.00" lon="-0.666" />
     </plankton-sample>
-  </flowcam-data>
+    Created by <process name="flowcam.app" version="0" /> on <date>2024-01-01</date>.
+  </provenance>
   <objects>
     <object sha256="f0449e5b41d6ede465140f2a695ac461cc2f73ffe4fe9e3d7ec27ddb4bd56725"
 	    path="294-032502 st2 4 juni 2021 50 m halv_000001.tif"

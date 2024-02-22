@@ -3,8 +3,10 @@ start = element manifest
       { attribute name { text }
       , attribute created { date }
       , attribute author { text }    # use email as ID?
+      , attribute dataclass { "flowcam" | "none" }?
+      # Flowcam specific information: https://docs.google.com/document/d/11n3qeoZctYqzwrH22xi2kACa5ij3uWPFH5q99cOaWZU/e
       , description
-      , specifics
+      , provenance
       , objects
       }
 
@@ -45,9 +47,12 @@ location = element location
 # Short description of the dataset
 description = element description { freetext }
 
-# Provenance for derived data, results of automatic processes
+# Provenance for derived data, automatic processes generate this
 provenance = element provenance
-    { (process | source-data)* }
+    { (freetext
+    | process
+    | plankton-sample )*
+    }
 
 process = element process
     { attribute name { text }
@@ -56,20 +61,10 @@ process = element process
     , attribute version { text }?
     }
 
-source-data = element source-data { attribute sha256 { hash }}  # maybe role?
-
-# Datatype-specific section, currently only flowcam data
-specifics = flowcam-data
-
 plankton-sample = element plankton-sample
     { (ctd-station | fixed-station)
     , location?
     }
-
-# Flowcam specific information:
-#   https://docs.google.com/document/d/11n3qeoZctYqzwrH22xi2kACa5ij3uWPFH5q99cOaWZU/e
-flowcam-data = element flowcam-data
-    { plankton-sample }
 
 # List of objects in the dataset
 objects =  element objects
@@ -91,4 +86,5 @@ freetext = ( text
            | element location { text }
 	   | element dataset { attribute id { hash }, text }
 	   | element cite { attribute doi { text }?, text? } # maybe author, year etc?
+	   | element date { date }
 	   )*
