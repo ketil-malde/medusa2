@@ -1,9 +1,8 @@
 python3 << EOF
 
 import medusa.datasets as md
-import medusa.storage as ms
 
-D = md.Datasets(ms.FileStorage('/tmp/medusa'))
+D = md.Datasets('/tmp/medusa')
 h = D.insert('examples/flowcam1')
 D.export(h, 'tmp_export')
 EOF

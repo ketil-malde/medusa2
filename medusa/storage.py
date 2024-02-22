@@ -14,6 +14,7 @@ class FileStorage:
     '''Implements a file-based storage for objects'''
 
     def __init__(self, repo):
+        print('File storage intialized: ', repo)
         self._repo = repo
 
     def hash2dir(self, fhash):
