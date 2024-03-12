@@ -3,7 +3,7 @@ start = element manifest
       { attribute name { text }
       , attribute created { date }
       , attribute author { text }    # use email as ID?
-      , attribute dataclass { "flowcam" | "none" }?
+      , attribute class { "flowcam" | "none" }?
       # Flowcam specific information: https://docs.google.com/document/d/11n3qeoZctYqzwrH22xi2kACa5ij3uWPFH5q99cOaWZU/e
       , description
       , provenance

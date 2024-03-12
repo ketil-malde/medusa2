@@ -7,7 +7,7 @@ echo; echo '*** IMPORTING ***'
 export MDZREPO=/tmp/M
 mdz/mdz import examples/flowcam1
 
-hash=2a6ec2b387fb718d8c9a7ac213bc3550cb2b4862c99604d73fbc6aa7fdffcf9d
+hash=2b4c723f9da61467dfe49d0fe1d953a32004fa5be5c8a38a02a7c78864595b20
 echo; echo '*** EXPORTING ***'
 mdz/mdz export $hash
 tree $hash
