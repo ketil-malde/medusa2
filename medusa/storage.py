@@ -50,5 +50,30 @@ class FileStorage:
             symlink(objname, fname)
         pass
 
+    def puts(self, mystring):
+        '''Put a string as an object'''
+        fhash = util.hashstring(mystring)
+        dname = path.join(self._repo, self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
+        fname = path.join(dname, fhash)
+        if not path.exists(dname):
+            makedirs(dname, exist_ok=True)
+        if not path.exists(fname):
+            with open(fname, 'w') as f:
+                f.write(mystring)
+        else:
+            print('Object already exists')
+        return fhash
+
+    def gets(self, myhash):
+        '''Get an object as a string'''
+        objname = path.join(self._repo, self.hash2dir(myhash)[0], self.hash2dir(myhash)[1], myhash)
+        if not path.exists(objname):
+            print('Object not found')
+            return None
+        else:
+            with open(objname, 'r') as f:
+                mystring = f.read()
+            return mystring
+
 class IPFSStorage():
     pass
