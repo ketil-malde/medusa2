@@ -2,7 +2,7 @@
 # use storage.py to manage storage
 # use ledger.py (todo) to manage records
 from medusa.validate import validate
-from medusa.util import error
+from medusa.util import error, get_hash
 from medusa.storage import mkstorage
 from lxml import etree
 import os
@@ -19,6 +19,13 @@ class Datasets:
         if not validate(dataset, quick=True):
             error(f'Validation failed for {dataset}.')
 
+        # skip if already exists
+        with open(f'{dataset}/manifest.xml', 'r') as fh:
+            myhash = get_hash(fh)
+        if self._store.exists(myhash):
+            print(f'Dataset {dataset} already registered.')
+            return myhash
+
         # iterate over all objects and store them
         doc = etree.parse(f'{dataset}/manifest.xml')
         for obj in doc.iter('object'):
@@ -26,7 +33,11 @@ class Datasets:
             fhash = obj.attrib['sha256']
             newhash = self._store.put(fname)
             assert newhash == fhash
-        return self._store.put(f'{dataset}/manifest.xml')
+
+        myhash = self._store.put(f'{dataset}/manifest.xml')
+        # fixme: how to deal with multiple inserts of existing datasets?
+        self._store.register(f'Insert\n{myhash}\n')
+        return myhash
 
     def export(self, dhash, dname=None):
         if not self._store.exists(dhash):
@@ -42,3 +53,12 @@ class Datasets:
                 self._store.get(fhash, fname)
                 # todo: make subdirs?
             # todo: mv from dhash to dataset name?
+
+    def list(self):
+        '''Process log to list datasets'''
+        cur = self._store.gethead()
+        while cur is not None:
+            log_entry = self._store.gets(cur)
+            print(log_entry)
+            cur = log_entry.splitlines()[-1]
+            if cur == 'None': cur = None

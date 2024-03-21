@@ -14,7 +14,15 @@ class FileStorage:
     '''Implements a file-based storage for objects'''
 
     def __init__(self, repo):
-        print('File storage intialized: ', repo)
+        if not path.exists(repo):
+            makedirs(repo, exist_ok=True)
+        head = path.join(repo, 'HEAD')
+        if path.exists(head):
+            print('Existing file storage initialized: ', repo)
+        else:
+            with open(head, 'w') as f:
+                f.write('None')
+            print('New file storage intialized: ', repo)
         self._repo = repo
 
     def hash2dir(self, fhash):
@@ -43,7 +51,7 @@ class FileStorage:
         objname = path.join(self._repo, self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
         if not fname: fname = fhash
         if not path.exists(objname):
-            print('Object not found')
+            print(f'Object not found: {fhash}')
         elif mode == 'copy':
             shutil.copy(objname, fname)
         else:
@@ -68,12 +76,26 @@ class FileStorage:
         '''Get an object as a string'''
         objname = path.join(self._repo, self.hash2dir(myhash)[0], self.hash2dir(myhash)[1], myhash)
         if not path.exists(objname):
-            print('Object not found')
+            print(f'Object not found: {myhash}')
             return None
         else:
             with open(objname, 'r') as f:
                 mystring = f.read()
             return mystring
+
+    def gethead(self):
+        with open(path.join(self._repo, 'HEAD'), 'r') as f:
+            s = f.readline()
+        return s
+
+    # This desperately needs a type system
+    def register(self, msg):
+        '''Add log message, replace HEAD'''
+        prevhash = self.gethead()
+        myhash = self.puts(msg+f'{prevhash}\n')
+        # write new HEAD
+        with open(path.join(self._repo, 'HEAD'), 'w') as f:
+            f.write(f'{myhash}')
 
 class IPFSStorage():
     pass
