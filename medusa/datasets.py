@@ -64,4 +64,4 @@ class Datasets:
 
     def list(self):
         '''Process log to list datasets'''
-        self._ledger.list()
+        return self._ledger.list()

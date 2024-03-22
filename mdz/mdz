@@ -32,6 +32,11 @@ def export(args):
         print(f'Exporting "{h}"')
         db.export(h)
 
+def list(args):
+    db = get_storage()
+    for d in db.list():
+        print(d)
+
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
         print(usage)
@@ -54,6 +59,10 @@ if __name__ == "__main__":
     exp = ps.add_parser('export', description='Export datasets into storage')
     exp.add_argument('hashes', nargs='+', help='data set hashes.')
     exp.set_defaults(func=export)
+
+    exp = ps.add_parser('list', description='Show stored datasets')
+    # exp.add_argument('hashes', nargs='+', help='data set hashes.')
+    exp.set_defaults(func=list)
 
     # Run
     args = p.parse_args()

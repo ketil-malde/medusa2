@@ -23,9 +23,11 @@ class Ledger:
     
     def list(self):
         '''Traverse the log and return the datasets'''
+        res = []
         cur = self._store.gethead()
         while cur is not None:
             log_entry = json.loads(self._store.gets(cur))
-            print(log_entry)
+            res.append(log_entry)
             cur = log_entry['Prev']
             if cur == 'None': cur = None
+        return res

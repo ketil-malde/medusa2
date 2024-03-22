@@ -12,3 +12,6 @@ echo; echo '*** EXPORTING ***'
 mdz/mdz export $hash
 tree $hash
 rm -rf $hash
+
+echo; echo '*** LISTING ***'
+mdz/mdz list
