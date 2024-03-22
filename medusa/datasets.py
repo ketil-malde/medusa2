@@ -1,6 +1,7 @@
 # Deal with datasets and storage
 # use storage.py to manage storage
 # use ledger.py (todo) to manage records
+from medusa.ledger import Ledger
 from medusa.validate import validate
 from medusa.util import error, get_hash
 from medusa.storage import mkstorage
@@ -10,6 +11,7 @@ import os
 class Datasets:
     def __init__(self, repo):
         self._store = mkstorage(repo)
+        self._ledger = Ledger(self._store)
 
     def insert(self, dataset):
         # verify metadata file
@@ -36,7 +38,7 @@ class Datasets:
 
         myhash = self._store.put(f'{dataset}/manifest.xml')
         # fixme: how to deal with multiple inserts of existing datasets?
-        self._store.register(f'Insert\n{myhash}\n')
+        self._ledger.log_insert(myhash)
         return myhash
 
     def export(self, dhash, dname=None):
@@ -54,11 +56,12 @@ class Datasets:
                 # todo: make subdirs?
             # todo: mv from dhash to dataset name?
 
+    def delete(self, dhash):
+        if not self._store.exists(dhash):
+            error(f'Cannot delete nonexistent dataset {dhash}.')
+        else:
+            self._ledger.log_delete(dhash)
+
     def list(self):
         '''Process log to list datasets'''
-        cur = self._store.gethead()
-        while cur is not None:
-            log_entry = self._store.gets(cur)
-            print(log_entry)
-            cur = log_entry.splitlines()[-1]
-            if cur == 'None': cur = None
+        self._ledger.list()

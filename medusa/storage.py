@@ -88,12 +88,7 @@ class FileStorage:
             s = f.readline()
         return s
 
-    # This desperately needs a type system
-    def register(self, msg):
-        '''Add log message, replace HEAD'''
-        prevhash = self.gethead()
-        myhash = self.puts(msg+f'{prevhash}\n')
-        # write new HEAD
+    def sethead(self, myhash):
         with open(path.join(self._repo, 'HEAD'), 'w') as f:
             f.write(f'{myhash}')
 
