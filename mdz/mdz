@@ -36,6 +36,9 @@ def list(args):
     db = get_storage()
     for d in db.list():
         print(d)
+        if 'Insert' in d.keys():
+            h = d['Insert']
+            print(f'{h} ->\n   {db._store.gets(h).splitlines()[0]}')
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
