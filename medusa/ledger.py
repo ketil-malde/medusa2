@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 class Ledger:
     def __init__(self, store):
@@ -18,6 +19,8 @@ class Ledger:
         '''Add log message, replace HEAD'''
         prevhash = self._store.gethead()
         msgdict['Prev'] = prevhash
+        msgdict['Date'] = str(datetime.utcnow())
+        self.sign(msgdict)
         myhash = self._store.puts(json.dumps(msgdict))
         self._store.sethead(myhash)
     
