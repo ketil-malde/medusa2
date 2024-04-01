@@ -1,11 +1,17 @@
+from medusa.util import error
+
 import json
 from datetime import datetime
+from sshkey_tools.keys import RsaPrivateKey  # , RsaPublicKey
+# from sshkey_tools.fields import RsaAlgs
+from os import path
 
 class Ledger:
     def __init__(self, store):
-        '''maybe read cache?'''
-        print('Initialized ledger.')
+        # maybe read cache?  Add initial key if new ledger
+        self.ssh_key = RsaPrivateKey.from_file(path.expanduser('~/.ssh/id_rsa'))
         self._store = store
+        print('Initialized ledger.')
 
     def log_insert(self, new_hash):
         '''Register a new dataset'''
@@ -20,17 +26,35 @@ class Ledger:
         prevhash = self._store.gethead()
         msgdict['Prev'] = prevhash
         msgdict['Date'] = str(datetime.utcnow())
-        self.sign(msgdict)
+        msgdict = self.sign(msgdict)
         myhash = self._store.puts(json.dumps(msgdict))
         self._store.sethead(myhash)
-    
+
     def list(self):
         '''Traverse the log and return the datasets'''
         res = []
         cur = self._store.gethead()
         while cur is not None:
             log_entry = json.loads(self._store.gets(cur))
+            if not self.verify(log_entry):
+                error('Incorrect signature!')
+            else:
+                print('Signature OK')
             res.append(log_entry)
             cur = log_entry['Prev']
             if cur == 'None': cur = None
         return res
+
+    # Signatures using SSH?
+    # better -> https://pypi.org/project/sshkey-tools/
+    # https://gist.github.com/aellerton/2988ff93c7d84f3dbf5b9b5a09f38ceb#file-1_sign-py-L19
+
+    def sign(self, msg):
+        msg['Signature'] = self.ssh_key.sign(json.dumps(msg).encode()).hex()
+        return msg
+
+    def verify(self, msg):
+        sig = msg.pop('Signature')
+        mysig = self.ssh_key.sign(json.dumps(msg).encode()).hex()
+        # self.ssh_key.public_key.verify(json.dumps(msg).encode(), bytearray.fromhex(sig)) <- fuck?
+        return sig == mysig
