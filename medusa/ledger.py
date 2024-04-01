@@ -2,8 +2,8 @@ from medusa.util import error
 
 import json
 from datetime import datetime
-from sshkey_tools.keys import RsaPrivateKey  # , RsaPublicKey
-# from sshkey_tools.fields import RsaAlgs
+from sshkey_tools.keys import RsaPrivateKey
+from sshkey_tools.exceptions import InvalidSignatureException
 from os import path
 
 class Ledger:
@@ -55,6 +55,9 @@ class Ledger:
 
     def verify(self, msg):
         sig = msg.pop('Signature')
-        mysig = self.ssh_key.sign(json.dumps(msg).encode()).hex()
-        # self.ssh_key.public_key.verify(json.dumps(msg).encode(), bytearray.fromhex(sig)) <- fuck?
-        return sig == mysig
+        try:
+            self.ssh_key.public_key.verify(json.dumps(msg).encode(), bytes.fromhex(sig))
+        except InvalidSignatureException:
+            return False
+        return True
+
