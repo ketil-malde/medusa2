@@ -7,10 +7,13 @@ from sshkey_tools.exceptions import InvalidSignatureException
 from os import path
 
 class Ledger:
-    def __init__(self, store):
+    def __init__(self, config, store):
         # maybe read cache?  Add initial key if new ledger
-        self.ssh_key = RsaPrivateKey.from_file(path.expanduser('~/.ssh/id_rsa'))
+        self.ssh_key = RsaPrivateKey.from_file(path.expanduser(config['rsakey']))
+        self.username = config['username']
+        self.userid = config['userid']
         self._store = store
+        # todo: if empty, add ourselves as a user
         print('Initialized ledger.')
 
     def log_insert(self, new_hash):
@@ -34,12 +37,13 @@ class Ledger:
         '''Traverse the log and return the datasets'''
         res = []
         cur = self._store.gethead()
+        if cur == 'None': cur = None
         while cur is not None:
             log_entry = json.loads(self._store.gets(cur))
             if not self.verify(log_entry):
                 error('Incorrect signature!')
-            else:
-                print('Signature OK')
+            # else:
+            #    print('Signature OK')
             res.append(log_entry)
             cur = log_entry['Prev']
             if cur == 'None': cur = None

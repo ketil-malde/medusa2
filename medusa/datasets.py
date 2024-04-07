@@ -5,13 +5,21 @@ from medusa.ledger import Ledger
 from medusa.validate import validate
 from medusa.util import error, get_hash
 from medusa.storage import mkstorage
+
 from lxml import etree
 import os
 
+# config is a dict which should contain
+#   username = Ketil Malde
+#   userid   = ketil@malde.org
+#   rsakey   = ~/.ssh/id_rsa
+#   repository = <location>
+
 class Datasets:
-    def __init__(self, repo):
-        self._store = mkstorage(repo)
-        self._ledger = Ledger(self._store)
+    def __init__(self, config):
+        print(f'Initializing Dataset: {config}')
+        self._store = mkstorage(config)
+        self._ledger = Ledger(config, self._store)
 
     def insert(self, dataset):
         # verify metadata file

@@ -13,17 +13,17 @@ def mkstorage(repo):
 class FileStorage:
     '''Implements a file-based storage for objects'''
 
-    def __init__(self, repo):
-        if not path.exists(repo):
-            makedirs(repo, exist_ok=True)
-        head = path.join(repo, 'HEAD')
+    def __init__(self, config):
+        if not path.exists(config['repository']):
+            makedirs(config['repository'], exist_ok=True)
+        head = path.join(config['repository'], 'HEAD')
         if path.exists(head):
-            print('Existing file storage initialized: ', repo)
+            print('Existing file storage initialized: ', config['repository'])
         else:
             with open(head, 'w') as f:
                 f.write('None')
-            print('New file storage intialized: ', repo)
-        self._repo = repo
+            print('New file storage intialized: ', config['repository'])
+        self._repo = config['repository']
 
     def hash2dir(self, fhash):
         '''Directory prefix for storing hashes'''
@@ -84,7 +84,9 @@ class FileStorage:
             return mystring
 
     def gethead(self):
-        with open(path.join(self._repo, 'HEAD'), 'r') as f:
+        head = path.join(self._repo, 'HEAD')
+        assert path.exists(head), f'oopsie? {self._repo}'
+        with open(head, 'r') as f:
             s = f.readline()
         return s
 

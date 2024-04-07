@@ -9,13 +9,26 @@ from medusa.datasets import Datasets
 
 usage = 'Usage: mdz {validate|import|export} DIR'
 
-def get_storage(repo=None):
-    if not repo and 'MDZREPO' in os.environ:
-        repo = os.environ['MDZREPO']
-    if not repo: error('No repository specified (set $MDZREPO)')
-    return Datasets(repo)
+def get_storage():
+    # Read config file
+    config = {}
+    with open(os.path.expanduser('~/.mdzrc')) as f:
+        for line in f:
+            name, var = line.partition("=")[::2]
+            config[name.strip()] = var.strip()
+
+    # Env variables can overrule
+    if 'MDZREPO' in os.environ: config['repository'] = os.environ['MDZREPO']
+    if 'MDZUSER' in os.environ: config['userid'] = os.environ['MDZUSER']
+    if 'MDZKEY' in os.environ: config['rsakey'] = os.environ['MDZKEY']
+
+    # Sanity check
+    if 'repository' not in config.keys(): error('No repository specified (set $MDZREPO)')
+
+    return Datasets(config)
 
 def validate(args):
+    print(args)
     for f in args.FILE:
         print(f'Dataset "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
 
@@ -38,7 +51,7 @@ def list(args):
         print(d)
         if 'Insert' in d.keys():
             h = d['Insert']
-            print(f'{h} ->\n   {db._store.gets(h).splitlines()[0]}')
+            print(f'{h[:12]} ->\n   {db._store.gets(h).splitlines()[0]}')
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
