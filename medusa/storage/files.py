@@ -4,14 +4,6 @@ from medusa.util import error
 from os import path, makedirs, symlink
 import shutil
 
-# Should this be a (base) class?
-def mkstorage(config, create):
-    '''Selects storage based on specifier'''
-    # repo starts with "HTTP" or "HTTPS"
-    # repo starts with "IPFS"
-    # otherwise
-    return FileStorage(config, create)
-
 class FileStorage:
     '''Implements a file-based storage for objects'''
 
