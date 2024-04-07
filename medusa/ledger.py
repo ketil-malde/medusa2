@@ -54,10 +54,12 @@ class Ledger:
     # https://gist.github.com/aellerton/2988ff93c7d84f3dbf5b9b5a09f38ceb#file-1_sign-py-L19
 
     def sign(self, msg):
+        msg['User'] = self.userid
         msg['Signature'] = self.ssh_key.sign(json.dumps(msg).encode()).hex()
         return msg
 
     def verify(self, msg):
+        # warning: messes with the message!
         sig = msg.pop('Signature')
         try:
             self.ssh_key.public_key.verify(json.dumps(msg).encode(), bytes.fromhex(sig))

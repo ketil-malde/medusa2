@@ -1,28 +1,35 @@
 import medusa.util as util
+from medusa.util import error
+
 from os import path, makedirs, symlink
 import shutil
 
 # Should this be a (base) class?
-def mkstorage(repo):
+def mkstorage(config, create):
     '''Selects storage based on specifier'''
     # repo starts with "HTTP" or "HTTPS"
     # repo starts with "IPFS"
     # otherwise
-    return FileStorage(repo)
+    return FileStorage(config, create)
 
 class FileStorage:
     '''Implements a file-based storage for objects'''
 
-    def __init__(self, config):
-        if not path.exists(config['repository']):
+    def __init__(self, config, create=False):
+        repopath = config['repository']
+        head = path.join(repopath, 'HEAD')
+
+        if create:
+            assert not path.exists(repopath), error(f'Cannot create {repopath}, it exists already.')
             makedirs(config['repository'], exist_ok=True)
-        head = path.join(config['repository'], 'HEAD')
-        if path.exists(head):
-            print('Existing file storage initialized: ', config['repository'])
-        else:
             with open(head, 'w') as f:
                 f.write('None')
-            print('New file storage intialized: ', config['repository'])
+            print('New file storage intialized: ', repopath)
+        else:
+            assert path.exists(repopath), error(f'Repository {repopath} does not exist.')
+            assert path.exists(head), error('Repository found, but no HEAD')
+            print('Existing file storage initialized: ', repopath)
+
         self._repo = config['repository']
 
     def hash2dir(self, fhash):

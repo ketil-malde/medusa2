@@ -9,7 +9,7 @@ from medusa.datasets import Datasets
 
 usage = 'Usage: mdz {validate|import|export} DIR'
 
-def get_storage():
+def get_storage(create=False):
     # Read config file
     config = {}
     with open(os.path.expanduser('~/.mdzrc')) as f:
@@ -25,7 +25,11 @@ def get_storage():
     # Sanity check
     if 'repository' not in config.keys(): error('No repository specified (set $MDZREPO)')
 
-    return Datasets(config)
+    return Datasets(config, create)
+
+def initialize(args):
+    '''Initialize a new repository, adding ourselves as a user.'''
+    get_storage(create=True)
 
 def validate(args):
     print(args)
@@ -72,13 +76,17 @@ if __name__ == "__main__":
     imp.add_argument('FILE', nargs='+', help='data set directories.')
     imp.set_defaults(func=insert)
 
+    # Exporting
     exp = ps.add_parser('export', description='Export datasets into storage')
     exp.add_argument('hashes', nargs='+', help='data set hashes.')
     exp.set_defaults(func=export)
 
-    exp = ps.add_parser('list', description='Show stored datasets')
-    # exp.add_argument('hashes', nargs='+', help='data set hashes.')
-    exp.set_defaults(func=list)
+    # Listing repo
+    lst = ps.add_parser('list', description='Show stored datasets')
+    lst.set_defaults(func=list)
+
+    init = ps.add_parser('init', description='Initialize a repository')
+    init.set_defaults(func=initialize)
 
     # Run
     args = p.parse_args()

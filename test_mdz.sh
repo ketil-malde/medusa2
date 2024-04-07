@@ -1,7 +1,14 @@
+#!/bin/bash
+
+set -e
+
 export PYTHONPATH=.
 
 echo '*** VALIDATING ***'
 mdz/mdz validate examples/flowcam1
+
+echo; echo '*** INITIALIZING ***'
+mdz/mdz init
 
 echo; echo '*** IMPORTING ***'
 export MDZREPO=/tmp/M

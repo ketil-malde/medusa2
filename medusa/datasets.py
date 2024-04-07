@@ -16,9 +16,9 @@ import os
 #   repository = <location>
 
 class Datasets:
-    def __init__(self, config):
+    def __init__(self, config, create=False):
         print(f'Initializing Dataset: {config}')
-        self._store = mkstorage(config)
+        self._store = mkstorage(config, create)
         self._ledger = Ledger(config, self._store)
 
     def insert(self, dataset):
