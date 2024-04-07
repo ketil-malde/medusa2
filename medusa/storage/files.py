@@ -92,6 +92,3 @@ class FileStorage:
     def sethead(self, myhash):
         with open(path.join(self._repo, 'HEAD'), 'w') as f:
             f.write(f'{myhash}')
-
-class IPFSStorage():
-    pass
