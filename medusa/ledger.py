@@ -66,4 +66,3 @@ class Ledger:
         except InvalidSignatureException:
             return False
         return True
-

@@ -2,7 +2,7 @@ import medusa.util as util
 from medusa.util import error
 
 from tempfile import NamedTemporaryFile
-from os import path
+import os
 import pysftp as sftp
 
 def repo_parse(repo):
@@ -29,6 +29,7 @@ class SftpStorage:
             with NamedTemporaryFile(delete=False) as f:
                 f.write(b'None')
             self._conn.put(f.name, 'HEAD')
+            os.unlink(f.name)
 
             print('New file storage intialized: ', config['repository'])
         else:
@@ -42,14 +43,14 @@ class SftpStorage:
         return(fhash[:3], fhash[3:6])
 
     def exists(self, fhash):
-        fname = path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
+        fname = os.path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
         return self._conn.exists(fname)
 
     def put(self, filename, verify_exists=True):
         with open(filename, 'rb') as fh:
             fhash = util.get_hash(fh)
-        dname = path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
-        fname = path.join(dname, fhash)
+        dname = os.path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
+        fname = os.path.join(dname, fhash)
         if not self._conn.exists(dname):
             self._conn.makedirs(dname)
         if not self._conn.exists(fname):
@@ -60,7 +61,7 @@ class SftpStorage:
 
     def get(self, fhash, fname=None, mode=None):
         '''Get object associated with fhash as specified by mode'''
-        objname = path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
+        objname = os.path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
         if not fname: fname = fhash
         if not self._conn.exists(objname):
             print(f'Object not found: {fhash}')
@@ -70,29 +71,32 @@ class SftpStorage:
     def puts(self, mystring):
         '''Put a string as an object'''
         fhash = util.hashstring(mystring)
-        dname = path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
-        fname = path.join(dname, fhash)
+        dname = os.path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
+        fname = os.path.join(dname, fhash)
         if not self._conn.exists(dname):
             self._conn.makedirs(dname)
         if not self._conn.exists(fname):
             with NamedTemporaryFile(delete=False) as f:
                 f.write(mystring.encode())
             self._conn.put(f.name, fname)
+            os.unlink(f.name)
+            
         else:
             print('Object already exists')
         return fhash
 
     def gets(self, myhash):
         '''Get an object as a string'''
-        objname = path.join(self.hash2dir(myhash)[0], self.hash2dir(myhash)[1], myhash)
+        objname = os.path.join(self.hash2dir(myhash)[0], self.hash2dir(myhash)[1], myhash)
         if not self._conn.exists(objname):
             print(f'Object not found: {myhash}')
             return None
         else:
-            f = NamedTemporaryFile(delete=False)
-            self._conn.get(objname, f.name)
-            with open(f.name) as f:
+            tf = NamedTemporaryFile()
+            self._conn.get(objname, tf.name)
+            with open(tf.name) as f:
                 mystring = f.read()
+            tf.close()
             return mystring
 
     def gethead(self):
@@ -101,9 +105,11 @@ class SftpStorage:
         self._conn.get('HEAD', head.name)
         with open(head.name, 'r') as f:
             s = f.readline()
+        head.close()
         return s
 
     def sethead(self, myhash):
         with NamedTemporaryFile(delete=False) as f:
             f.write(f'{myhash}'.encode())
         self._conn.put(f.name, 'HEAD')
+        os.unlink(f.name)
