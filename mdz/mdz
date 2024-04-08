@@ -19,7 +19,8 @@ def get_storage(create=False):
 
     # Env variables can overrule
     if 'MDZREPO' in os.environ: config['repository'] = os.environ['MDZREPO']
-    if 'MDZUSER' in os.environ: config['userid'] = os.environ['MDZUSER']
+    if 'MDZUSERID' in os.environ: config['userid'] = os.environ['MDZUSERID']
+    if 'MDZUSERNAME' in os.environ: config['userid'] = os.environ['MDZUSERNAME']
     if 'MDZKEY' in os.environ: config['rsakey'] = os.environ['MDZKEY']
 
     # Sanity check
