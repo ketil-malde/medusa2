@@ -26,7 +26,8 @@ SFTP, if not, it will work directly on the file system.  Possible
 commands are:
 
 - `mdz init` - initialize a repository
-- `mdz list` - list repository contents
+- `mdz log` - list repository ledger entries
+- `mdz search` - show datasets
 - `mdz validate` - validate a local data set
 - `mdz import` - copy a local data set into the repository
 - `mdz export` - extract a data set from the repository
