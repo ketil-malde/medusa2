@@ -33,11 +33,13 @@ def initialize(args):
     get_storage(create=True)
 
 def validate(args):
+    '''Validate a dataset'''
     print(args)
     for f in args.FILE:
         print(f'Dataset "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
 
 def insert(args):
+    '''Add a new dataset to the repository'''
     db = get_storage()
     for f in args.FILE:
         print(f'Importing "{f}"')
@@ -45,18 +47,26 @@ def insert(args):
         print(f'Hash: {h}')
 
 def export(args):
+    '''Export a dataset from the repository'''
     db = get_storage()
     for h in args.hashes:
         print(f'Exporting "{h}"')
         db.export(h)
 
-def list(args):
+def log(args):
+    '''List the entries in the ledger'''
     db = get_storage()
     for d in db.list():
         print(d)
+
+def search(args):
+    '''Search for datasets matching criteria'''
+    db = get_storage()
+    for d in db.list():
         if 'Insert' in d.keys():
             h = d['Insert']
-            print(f'{h[:12]} ->\n   {db._store.gets(h).splitlines()[0]}')
+            print(f'{h[:12]} -> {db._store.gets(h).splitlines()[0]}')
+
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
@@ -83,12 +93,17 @@ if __name__ == "__main__":
     exp.set_defaults(func=export)
 
     # Listing repo
-    lst = ps.add_parser('list', description='Show stored datasets')
-    lst.set_defaults(func=list)
+    lst = ps.add_parser('log', description='Show stored datasets')
+    lst.set_defaults(func=log)
 
+    # Searching a repo
+    srch = ps.add_parser('search', description='Show stored datasets')
+    srch.set_defaults(func=search)
+
+    # Initializing a repo
     init = ps.add_parser('init', description='Initialize a repository')
     init.set_defaults(func=initialize)
 
-    # Run
+    # Run it
     args = p.parse_args()
     args.func(args)
