@@ -4,6 +4,8 @@ import medusa as m
 import sys
 import os
 import argparse
+from sshkey_tools.keys import RsaPrivateKey
+
 from medusa.util import error
 from medusa.datasets import Datasets
 
@@ -20,13 +22,17 @@ def get_storage(create=False):
     # Env variables can overrule
     if 'MDZREPO' in os.environ: config['repository'] = os.environ['MDZREPO']
     if 'MDZUSERID' in os.environ: config['userid'] = os.environ['MDZUSERID']
-    if 'MDZUSERNAME' in os.environ: config['userid'] = os.environ['MDZUSERNAME']
+    if 'MDZUSERNAME' in os.environ: config['username'] = os.environ['MDZUSERNAME']
     if 'MDZKEY' in os.environ: config['rsakey'] = os.environ['MDZKEY']
 
     # Sanity check
     if 'repository' not in config.keys(): error('No repository specified (set $MDZREPO)')
 
-    return Datasets(config, create)
+    db = Datasets(config, create)
+    if create:
+        ssh_key = RsaPrivateKey.from_file(os.path.expanduser(config['rsakey']))
+        db.adduser(config['userid'], config['username'], ssh_key.public_key.to_string())
+    return db
 
 def initialize(args):
     '''Initialize a new repository, adding ourselves as a user.'''

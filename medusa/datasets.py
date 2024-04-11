@@ -21,6 +21,9 @@ class Datasets:
         self._store = mkstorage(config, create)
         self._ledger = Ledger(config, self._store)
 
+    def adduser(self, userid, name, key):
+        self._ledger.log_adduser(userid, name, key)
+
     def insert(self, dataset):
         # verify metadata file
         if not os.path.exists(dataset):

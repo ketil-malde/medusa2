@@ -2,7 +2,7 @@ from medusa.util import error
 
 import json
 from datetime import datetime
-from sshkey_tools.keys import RsaPrivateKey
+from sshkey_tools.keys import RsaPrivateKey, PublicKey
 from sshkey_tools.exceptions import InvalidSignatureException
 from os import path
 
@@ -13,7 +13,13 @@ class Ledger:
         self.username = config['username']
         self.userid = config['userid']
         self._store = store
-        # todo: if empty, add ourselves as a user
+        self._users = {}
+        # todo: use local cache
+        for d in reversed(self.list(check=False)):
+            if d['Prev'] != 'None':
+                self.verify(d)
+            if 'AddUser' in d.keys():
+                self._users[d['AddUser']] = {'Key': d['Key'], 'Name' : d['Name']}
         print('Initialized ledger.')
 
     def log_insert(self, new_hash):
@@ -24,6 +30,19 @@ class Ledger:
         '''Register deletion of a dataset'''
         self.register({'Delete': del_hash})
 
+    # Users and affiliations:
+    # Rights: authorize to add/delete data
+    #         authorize to add/delete users
+
+    def log_adduser(self, userid, username, pubkey):
+        '''Register a new user'''
+        self.register({'AddUser': userid, 'Name': username, 'Key': pubkey})
+
+    def log_deluser(self, user):
+        '''Revoke a user'''
+        # Check that submitting user has rights
+        self.register({'DelUser': user})
+
     def register(self, msgdict):
         '''Add log message, replace HEAD'''
         prevhash = self._store.gethead()
@@ -33,14 +52,15 @@ class Ledger:
         myhash = self._store.puts(json.dumps(msgdict))
         self._store.sethead(myhash)
 
-    def list(self):
+    def list(self, check=True):
         '''Traverse the log and return the datasets'''
+        # should be an Iterator?
         res = []
         cur = self._store.gethead()
         if cur == 'None': cur = None
         while cur is not None:
             log_entry = json.loads(self._store.gets(cur))
-            if not self.verify(log_entry):
+            if check and not self.verify(log_entry):
                 error('Incorrect signature!')
             # else:
             #    print('Signature OK')
@@ -60,9 +80,11 @@ class Ledger:
 
     def verify(self, msg):
         # warning: messes with the message!
+        uid = msg['User']
         sig = msg.pop('Signature')
         try:
-            self.ssh_key.public_key.verify(json.dumps(msg).encode(), bytes.fromhex(sig))
+            pkey = PublicKey.from_string(self._users[uid]['Key'])
+            pkey.verify(json.dumps(msg).encode(), bytes.fromhex(sig))
         except InvalidSignatureException:
             return False
         return True
