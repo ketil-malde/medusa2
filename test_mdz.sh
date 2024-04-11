@@ -20,4 +20,6 @@ tree $hash
 rm -rf $hash
 
 echo; echo '*** LISTING ***'
-mdz/mdz list
+mdz/mdz search
+echo
+mdz/mdz log
