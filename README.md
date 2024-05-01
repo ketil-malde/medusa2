@@ -32,3 +32,4 @@ commands are:
 - `mdz import` - copy a local data set into the repository
 - `mdz export` - extract a data set from the repository
 
+(To be continued)

@@ -22,13 +22,16 @@ validate_file = {
     'image/tiff' : validate_tiff
 }
 
+def get_schema():
+    libdir = dirname(dirname(__file__))+'/xml/'
+    rngstr = rnc2rng.dumps(rnc2rng.load(f'{libdir}/manifest.rnc')).encode()
+    return etree.RelaxNG(etree.fromstring(rngstr))
+
 def validate(dataset, quick=False, datatype=None):
     '''Validate a dataset.  Set quick to stop at first error.'''
     status = True
-    libdir = dirname(dirname(__file__))+'/xml/'
-    rngstr = rnc2rng.dumps(rnc2rng.load(f'{libdir}/manifest.rnc')).encode()
-    schema = etree.RelaxNG(etree.fromstring(rngstr))
     doc = etree.parse(f'{dataset}/manifest.xml')
+    schema = get_schema()
     if not schema.validate(doc):
         print(f'Metadata file "{dataset}/manifest.xml": validation failed')
         print(schema.error_log)
