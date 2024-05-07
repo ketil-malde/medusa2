@@ -6,6 +6,7 @@ from medusa.validate import validate
 from medusa.util import error, get_hash
 from medusa.storage import mkstorage
 
+from sshkey_tools.keys import RsaPrivateKey
 from lxml import etree
 import os
 
@@ -20,6 +21,10 @@ class Datasets:
         print(f'Initializing Dataset: {config}')
         self._store = mkstorage(config, create)
         self._ledger = Ledger(config, self._store)
+        self._config = config
+        if create:
+            ssh_key = RsaPrivateKey.from_file(os.path.expanduser(self._config['rsakey']))
+            self.adduser(self._config['userid'], self._config['username'], ssh_key.public_key.to_string())
 
     def adduser(self, userid, name, key):
         self._ledger.log_adduser(userid, name, key)

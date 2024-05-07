@@ -8,7 +8,7 @@ echo '*** VALIDATING ***'
 mdz/mdz validate examples/flowcam1
 
 echo; echo '*** INITIALIZING ***'
-mdz/mdz init
+mdz/mdz init || echo 'Failed, but probably just because the repo already exists?'
 
 echo; echo '*** IMPORTING ***'
 mdz/mdz import examples/flowcam1

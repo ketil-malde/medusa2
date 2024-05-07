@@ -4,7 +4,6 @@ import medusa as m
 import sys
 import os
 import argparse
-from sshkey_tools.keys import RsaPrivateKey
 
 from medusa.util import error
 from medusa.datasets import Datasets
@@ -31,11 +30,7 @@ def get_storage(create=False):
     # Sanity check
     if 'repository' not in config.keys(): error('No repository specified (set $MDZREPO)')
 
-    db = Datasets(config, create)
-    if create:
-        ssh_key = RsaPrivateKey.from_file(os.path.expanduser(config['rsakey']))
-        db.adduser(config['userid'], config['username'], ssh_key.public_key.to_string())
-    return db
+    return Datasets(config, create)
 
 def initialize(args):
     '''Initialize a new repository, adding ourselves as a user.'''
