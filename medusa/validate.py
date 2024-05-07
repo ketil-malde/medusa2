@@ -23,7 +23,7 @@ validate_file = {
 }
 
 def get_schema():
-    libdir = dirname(dirname(__file__)) + '/xml/'
+    libdir = dirname(__file__) + '/xml/'
     rngstr = rnc2rng.dumps(rnc2rng.load(f'{libdir}/manifest.rnc')).encode()
     return etree.RelaxNG(etree.fromstring(rngstr))
 
