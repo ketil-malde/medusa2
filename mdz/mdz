@@ -6,7 +6,7 @@ import os
 import argparse
 
 from medusa.util import error
-from medusa.datasets import Datasets
+from medusa.datasets import Datasets, read_ssh_key
 
 usage = 'Usage: mdz {validate|import|export} DIR'
 
@@ -71,6 +71,19 @@ def search(args):
             h = d['Insert']
             print(f'{h[:12]} -> {db._store.gets(h).splitlines()[0]}')
 
+def adduser(args):
+    '''Add a new set of user credentials'''
+    db = get_storage()
+    # args?
+    if args.keyfile is not None and os.path.exists(args.keyfile):
+        ssh_key = read_ssh_key(args.keyfile)
+    elif args.ssh_key is not None:
+        ssh_key = args.ssh_key
+    else:
+        error('SSH key not defined')
+
+    db.adduser(args.userid, args.username, ssh_key.public_key.to_string())
+
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
@@ -107,6 +120,13 @@ if __name__ == "__main__":
     # Initializing a repo
     init = ps.add_parser('init', description='Initialize a repository')
     init.set_defaults(func=initialize)
+
+    uadd = ps.add_parser('adduser', description='Add a set of user credentials')
+    uadd.add_argument('userid', help='User id (typically email address)')
+    uadd.add_argument('username', help='Full user name')
+    uadd.add_argument('ssh_key', help='SSH key')
+    uadd.add_argument('keyfile', help='Path to SSH key')
+    uadd.set_defaults(func=adduser)
 
     # Run it
     args = p.parse_args()

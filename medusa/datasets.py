@@ -16,6 +16,10 @@ import os
 #   rsakey   = ~/.ssh/id_rsa
 #   repository = <location>
 
+def read_ssh_key(keyfile):
+    # should probably have a way to only read public key?
+    return RsaPrivateKey.from_file(os.path.expanduser(keyfile))
+
 class Datasets:
     def __init__(self, config, create=False):
         print(f'Initializing Dataset: {config}')
@@ -23,7 +27,7 @@ class Datasets:
         self._ledger = Ledger(config, self._store)
         self._config = config
         if create:
-            ssh_key = RsaPrivateKey.from_file(os.path.expanduser(self._config['rsakey']))
+            ssh_key = read_ssh_key(self._config['rsakey'])
             self.adduser(self._config['userid'], self._config['username'], ssh_key.public_key.to_string())
 
     def adduser(self, userid, name, key):
