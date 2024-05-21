@@ -76,13 +76,14 @@ def adduser(args):
     db = get_storage()
     # args?
     if args.keyfile is not None and os.path.exists(args.keyfile):
-        ssh_pkey = read_ssh_pkey(args.keyfile)
+        with open(args.keyfile, 'r') as f:
+            ssh_pkey = f.read()
     elif args.ssh_key is not None:
         ssh_pkey = args.ssh_key
     else:
         error('SSH key not defined')
 
-    db.adduser(args.userid, args.username, ssh_pkey.to_string())
+    db.adduser(args.userid, args.username, ssh_pkey)
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
@@ -123,8 +124,8 @@ if __name__ == "__main__":
     uadd = ps.add_parser('adduser', description='Add a set of user credentials')
     uadd.add_argument('userid', help='User id (typically email address)')
     uadd.add_argument('username', help='Full user name')
-    uadd.add_argument('ssh_key', help='SSH key')
-    uadd.add_argument('keyfile', help='Path to SSH key')
+    uadd.add_argument('--ssh_key', '-K', help='SSH public key', default=None, type=str)
+    uadd.add_argument('--keyfile', '-k', help='Path to SSH public key', default=None, type=str)
     uadd.set_defaults(func=adduser)
 
     # Run it
