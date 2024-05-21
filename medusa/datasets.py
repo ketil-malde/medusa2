@@ -6,7 +6,7 @@ from medusa.validate import validate
 from medusa.util import error, get_hash
 from medusa.storage import mkstorage
 
-from sshkey_tools.keys import RsaPrivateKey
+from sshkey_tools.keys import RsaPrivateKey, PublicKey
 from lxml import etree
 import os
 
@@ -19,6 +19,9 @@ import os
 def read_ssh_key(keyfile):
     # should probably have a way to only read public key?
     return RsaPrivateKey.from_file(os.path.expanduser(keyfile))
+
+def read_ssh_pkey(keyfile):
+    return PublicKey.from_file(os.path.expanduser(keyfile))
 
 class Datasets:
     def __init__(self, config, create=False):
