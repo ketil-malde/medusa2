@@ -30,12 +30,11 @@ class Ledger:
         '''Register deletion of a dataset'''
         self.register({'Delete': del_hash})
 
-    # Users and affiliations:
-    # Rights: authorize to add/delete data
-    #         authorize to add/delete users
-
     def log_adduser(self, userid, username, pubkey):
         '''Register a new user'''
+        if userid in self._users:
+            error(f'User {userid} already exists as {self._users[userid]["Name"]}.')
+        # check that key is unique, too?
         self.register({'AddUser': userid, 'Name': username, 'Key': pubkey})
 
     def log_deluser(self, user):
