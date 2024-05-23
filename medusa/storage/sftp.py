@@ -40,7 +40,7 @@ class SftpStorage:
 
     def hash2dir(self, fhash):
         '''Directory prefix for storing hashes'''
-        return(fhash[:3], fhash[3:6])
+        return (fhash[:3], fhash[3:6])
 
     def exists(self, fhash):
         fname = os.path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
@@ -80,7 +80,7 @@ class SftpStorage:
                 f.write(mystring.encode())
             self._conn.put(f.name, fname)
             os.unlink(f.name)
-            
+
         else:
             print('Object already exists')
         return fhash

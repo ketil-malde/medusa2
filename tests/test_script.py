@@ -21,7 +21,8 @@ def test_repo():
     print('Exporting dataset:')
     D.export(h, 'tmp_export')
 
-# Cleanup    
+# Cleanup
+# flake8: noqa E402
 import shutil
 import os
 
