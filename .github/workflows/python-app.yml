@@ -28,6 +28,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Set up SSH config
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keygen -b 1024 -t rsa -f ~/.ssh/id_rsa -q -N ""
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -36,4 +40,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pythom -m test
+        python -m pytest
