@@ -33,6 +33,7 @@ class FileStorage:
         return path.exists(fname)
 
     def put(self, filename, verify_exists=True):
+        '''Put an object in the repository, returning its hash'''
         with open(filename, 'rb') as fh:
             fhash = util.get_hash(fh)
         dname = path.join(self._repo, self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
