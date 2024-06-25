@@ -12,11 +12,11 @@ class HttpStorage:
 
     def put(self, filename, verify_exists=True):
         '''Put an object in the repository, returning its hash'''
-        with open(filename, 'r') as payload:
+        with open(filename, 'rb') as payload:
             r = requests.post(self._repo, data=payload)
-        return r.status_code == 200  # todo: return hash
+        return r.content.decode()
 
-    def get(self, fhash, fname):   # , fname=None):
+    def get(self, fhash, fname):
         '''Get object associated with fhash'''
         r = requests.get(self._repo + fhash)
         if fname is None: fname = fhash
@@ -25,11 +25,12 @@ class HttpStorage:
     def puts(self, mystring):
         '''Put a string as an object'''
         r = requests.post(self._repo, data=mystring)
-        return r.status_code == 200  # TODO: return hash
+        return r.content.decode()
 
     def gets(self, myhash):
         '''Get an object as a (byte?)string'''
         r = requests.get(self._repo + myhash)
+        # check for error
         return r.content
 
     def gethead(self):

@@ -48,7 +48,7 @@ class Ledger:
         msgdict['Prev'] = prevhash
         msgdict['Date'] = str(datetime.utcnow())
         msgdict = self.sign(msgdict)
-        myhash = self._store.puts(json.dumps(msgdict))
+        myhash = self._store.puts(json.dumps(msgdict).encode())
         self._store.sethead(myhash)
 
     def list(self, check=True):
@@ -58,7 +58,8 @@ class Ledger:
         cur = self._store.gethead()
         if cur == 'None': cur = None
         while cur is not None:
-            log_entry = json.loads(self._store.gets(cur))
+            msg = self._store.gets(cur)
+            log_entry = json.loads(msg)
             if check and not self.verify(log_entry):
                 error('Incorrect signature!')
             # else:

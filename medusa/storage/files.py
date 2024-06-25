@@ -57,16 +57,16 @@ class FileStorage:
         else:
             symlink(objname, fname)
 
-    def puts(self, mystring):
+    def puts(self, mybstring):
         '''Put a string as an object'''
-        fhash = util.hashstring(mystring)
+        fhash = util.hashstring(mybstring)
         dname = path.join(self._repo, self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
         fname = path.join(dname, fhash)
         if not path.exists(dname):
             makedirs(dname, exist_ok=True)
         if not path.exists(fname):
-            with open(fname, 'w') as f:
-                f.write(mystring)
+            with open(fname, 'wb') as f:
+                f.write(mybstring)
         else:
             print('Object already exists')
         return fhash

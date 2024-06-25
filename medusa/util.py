@@ -8,7 +8,10 @@ def get_hash(fhandle):
         return hashlib.sha256(fm).hexdigest()
 
 def hashstring(string):
-    return hashlib.sha256(string.encode()).hexdigest()
+    if isinstance(string, str):
+        return hashlib.sha256(string.encode()).hexdigest()
+    else:  # hack for HTTP backend
+        return hashlib.sha256(string).hexdigest()
 
 # Colors for text highlighting
 MAGENTA = '\033[95m'
