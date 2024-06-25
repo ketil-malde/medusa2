@@ -2,3 +2,5 @@ lxml
 rnc2rng
 sshkey_tools
 pysftp
+flask
+requests
