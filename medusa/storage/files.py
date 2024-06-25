@@ -56,7 +56,6 @@ class FileStorage:
             shutil.copy(objname, fname)
         else:
             symlink(objname, fname)
-        pass
 
     def puts(self, mystring):
         '''Put a string as an object'''
