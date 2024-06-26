@@ -3,7 +3,7 @@
 
 import flask
 from medusa.storage import mkstorage
-from os import path, remove
+from os import remove
 
 # Set up MDZ repository as normal
 config = {'username': 'Ketil Malde',
