@@ -20,15 +20,19 @@ def get_root():
     print('Requesting repository HEAD')
     return fs.gethead()
 
-
 @server.route('/', methods=['POST'])
+def set_root():
+    print('Setting repository HEAD')
+    fs.sethead(flask.request.data.decode())
+    return 'Set HEAD', 200
+
+@server.route('/put/', methods=['POST'])
 def put_object():
-    myhash = fs.puts(flask.request.data)  # fuck this shit.
+    myhash = fs.puts(flask.request.data)
     print(f'Posted id: {myhash}')
     return myhash, 200
 
-
-@server.route('/<id>', methods=['HEAD'])
+@server.route('/get/<id>', methods=['HEAD'])
 def check_object(id):
     print(f'Testing for {id}')
     if fs.exists(id):
@@ -36,8 +40,7 @@ def check_object(id):
     else:
         return 'Object {id} does not exist', 404
 
-
-@server.route('/<id>', methods=['GET'])
+@server.route('/get/<id>', methods=['GET'])
 def get_object(id):
     # see: https://stackoverflow.com/questions/11017466/flask-to-return-image-stored-in-database
     # flask.send_file(path_or_file, mimetype=None, as_attachment=False, download_name=None, conditional=True, etag=True, last_modified=None, max_age=None)

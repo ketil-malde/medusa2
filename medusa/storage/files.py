@@ -58,7 +58,7 @@ class FileStorage:
             symlink(objname, fname)
 
     def puts(self, mybstring):
-        '''Put a string as an object'''
+        '''Put a bytestring as an object'''
         fhash = util.hashstring(mybstring)
         dname = path.join(self._repo, self.hash2dir(fhash)[0], self.hash2dir(fhash)[1])
         fname = path.join(dname, fhash)
@@ -72,13 +72,13 @@ class FileStorage:
         return fhash
 
     def gets(self, myhash):
-        '''Get an object as a string'''
+        '''Get an object as a bytestring'''
         objname = path.join(self._repo, self.hash2dir(myhash)[0], self.hash2dir(myhash)[1], myhash)
         if not path.exists(objname):
             print(f'Object not found: {myhash}')
             return None
         else:
-            with open(objname, 'r') as f:
+            with open(objname, 'rb') as f:
                 mystring = f.read()
             return mystring
 
