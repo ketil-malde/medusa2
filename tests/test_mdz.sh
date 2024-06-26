@@ -23,3 +23,12 @@ echo; echo '*** LISTING ***'
 mdz/mdz search
 echo
 mdz/mdz log
+
+echo; echo '*** HTTP test ***'
+flask --app mdz/mdzd run > server.out 2> server.err &
+MDZREPO=http://localhost:5000/ mdz/mdz log
+MDZREPO=http://localhost:5000/ mdz/mdz export $hash
+tree $hash
+rm -rf $hash
+kill %%
+
