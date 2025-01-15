@@ -6,30 +6,17 @@ import os
 import argparse
 
 from medusa.util import error
-from medusa.datasets import Datasets, read_ssh_key, read_ssh_pkey
+from medusa.datasets import Datasets  # , read_ssh_key, read_ssh_pkey
+from medusa.config import get_config
 
 usage = 'Usage: mdz {validate|import|export} DIR'
 
 def get_storage(create=False):
     # Read config file
-    config = {}
-    # by reversed priority - last overrides (todo: use registry on Windows?)
-    for cfile in [os.path.expanduser('~/.mdzrc'), os.path.expanduser('~/.config/mdz')]:
-        if os.path.exists(cfile):
-            with open(cfile) as f:
-                for line in f:
-                    name, var = line.partition("=")[::2]
-                    config[name.strip()] = var.strip()
-
-    # Env variables can overrule
-    if 'MDZREPO' in os.environ: config['repository'] = os.environ['MDZREPO']
-    if 'MDZUSERID' in os.environ: config['userid'] = os.environ['MDZUSERID']
-    if 'MDZUSERNAME' in os.environ: config['username'] = os.environ['MDZUSERNAME']
-    if 'MDZKEY' in os.environ: config['rsakey'] = os.environ['MDZKEY']
+    config = get_config()
 
     # Sanity check
     if 'repository' not in config.keys(): error('No repository specified (set $MDZREPO)')
-
     return Datasets(config, create)
 
 def initialize(args):

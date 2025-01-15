@@ -1,7 +1,7 @@
 from medusa.util import error
 
 import json
-from datetime import datetime
+from datetime import datetime, UTC
 from sshkey_tools.keys import RsaPrivateKey, PublicKey
 from sshkey_tools.exceptions import InvalidSignatureException
 from os import path
@@ -46,7 +46,7 @@ class Ledger:
         '''Add log message, replace HEAD'''
         prevhash = self._store.gethead()
         msgdict['Prev'] = prevhash
-        msgdict['Date'] = str(datetime.utcnow())
+        msgdict['Date'] = str(datetime.now(UTC))
         msgdict = self.sign(msgdict)
         myhash = self._store.puts(json.dumps(msgdict).encode())
         self._store.sethead(myhash)

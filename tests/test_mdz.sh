@@ -2,6 +2,11 @@
 
 set -e
 
+export MDZUSERNAME="Test User"
+export MDZUSERID=test@example.org
+export MDZKEY=~/.ssh/id_rsa
+export MDZREPO=/tmp/mdztest2
+
 export PYTHONPATH=.
 
 echo '*** VALIDATING ***'

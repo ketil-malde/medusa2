@@ -3,13 +3,11 @@
 
 import flask
 from medusa.storage import mkstorage
+from medusa.config import get_config
 from os import remove
 
 # Set up MDZ repository as normal
-config = {'username': 'Ketil Malde',
-          'userid': 'ketil@malde.org',
-          'rsakey': '~/.ssh/id_rsa',
-          'repository': '/tmp/mdz'}
+config = get_config()
 
 fs = mkstorage(config, create=False)
 
