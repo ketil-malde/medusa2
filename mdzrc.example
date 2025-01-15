@@ -1,0 +1,4 @@
+username   = Test User
+userid     = test@example.org
+rsakey     = ~/.ssh/id_rsa
+repository = /tmp/mdztest
