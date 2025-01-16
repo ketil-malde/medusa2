@@ -31,6 +31,7 @@ mdz/mdz log
 
 echo; echo '*** HTTP test ***'
 flask --app mdz/mdzd run &
+sleep 5
 MDZREPO=http://localhost:5000/ mdz/mdz log
 MDZREPO=http://localhost:5000/ mdz/mdz export $hash
 tree $hash
