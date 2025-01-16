@@ -30,7 +30,7 @@ echo
 mdz/mdz log
 
 echo; echo '*** HTTP test ***'
-flask --app mdz/mdzd run > server.out 2> server.err &
+flask --app mdz/mdzd run &
 MDZREPO=http://localhost:5000/ mdz/mdz log
 MDZREPO=http://localhost:5000/ mdz/mdz export $hash
 tree $hash
