@@ -1,4 +1,4 @@
-# Medusa: a metadata-oriented distributed universal storage
+# Medusa: a metadata-oriented decentralized universal storage
 
 Medusa is a simple system for managing data sets as collection of
 files, described using a simple metadata format.  It uses
