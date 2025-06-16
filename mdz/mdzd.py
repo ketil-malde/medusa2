@@ -4,11 +4,12 @@
 import flask
 from medusa.storage import mkstorage
 from medusa.config import get_config
+from medusa.util import error
 from os import remove
 
 # Set up MDZ repository as normal
 config = get_config()
-
+assert 'repository' in config.keys(), error('Repository not specified, set $MDZREPO')
 fs = mkstorage(config, create=False)
 
 server = flask.Flask(__name__)
