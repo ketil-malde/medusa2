@@ -1,4 +1,5 @@
 import os
+from medusa.util import error, warn
 
 def get_config():
     config = {}
@@ -23,6 +24,21 @@ def get_config():
         print('RSA key not specified in config, using default')
 
     if 'rsakey' not in config or not os.path.exists(config['rsakey']):
-        print('Warning: no RSA key found.')
+        warn('No RSA key found.')
 
     return config
+
+
+def configure(args={}):
+    cfile = os.path.expanduser('~/.config/mdz')
+    if os.path.exists(cfile): error('Config file ".config/mdz" already exists.')
+
+    config = {}
+    config['userid'] = input('User id (should be a valid email address)?  ')
+    config['username'] = input('Your full name?  ')
+    config['repository'] = input('Path to repository?  ')
+    config['rsakey'] = input('Path to your RSA key?  ')
+
+    with open(cfile, 'w') as f:
+        for k,v in config.items():
+            f.write(k + ' = ' + f)

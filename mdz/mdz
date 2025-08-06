@@ -7,7 +7,7 @@ import argparse
 
 from medusa.util import error
 from medusa.datasets import Datasets  # , read_ssh_key, read_ssh_pkey
-from medusa.config import get_config
+from medusa.config import get_config, configure
 
 usage = 'Usage: mdz {validate|import|export} DIR'
 
@@ -114,6 +114,9 @@ if __name__ == "__main__":
     uadd.add_argument('--ssh_key', '-K', help='SSH public key', default=None, type=str)
     uadd.add_argument('--keyfile', '-k', help='Path to SSH public key', default=None, type=str)
     uadd.set_defaults(func=adduser)
+
+    conf = ps.add_parser('configure', description='Configure user and repository information')
+    conf.set_defaults(func=configure)
 
     # Run it
     args = p.parse_args()
