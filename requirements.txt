@@ -1,3 +1,4 @@
+paramiko<4
 lxml
 rnc2rng
 sshkey_tools
