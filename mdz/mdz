@@ -9,8 +9,6 @@ from medusa.util import error
 from medusa.datasets import Datasets  # , read_ssh_key, read_ssh_pkey
 from medusa.config import get_config, configure
 
-usage = 'Usage: mdz {validate|import|export} DIR'
-
 def get_storage(create=False):
     # Read config file
     config = get_config()
@@ -73,9 +71,6 @@ def adduser(args):
     db.adduser(args.userid, args.username, ssh_pkey)
 
 if __name__ == "__main__":
-    if len(sys.argv) <= 1:
-        print(usage)
-        exit(0)
 
     p = argparse.ArgumentParser(description='Manage Medusa data sets')
     ps = p.add_subparsers()
@@ -119,5 +114,8 @@ if __name__ == "__main__":
     conf.set_defaults(func=configure)
 
     # Run it
-    args = p.parse_args()
-    args.func(args)
+    if len(sys.argv) <= 1:
+        p.print_usage()
+    else:
+        args = p.parse_args()
+        args.func(args)
