@@ -34,7 +34,12 @@ def get_schema():
 def validate(dataset, quick=False, datatype=None):
     '''Validate a dataset.  Set quick to stop at first error.'''
     status = True
-    doc = etree.parse(f'{dataset}/manifest.xml')
+    try:
+        doc = etree.parse(f'{dataset}/manifest.xml')
+    except Exception as e:
+        error(f'Failed to parse {dataset}/manifest.xml', stop=False)
+        print(e)
+        return False
     schema = get_schema()
     if not schema.validate(doc):
         error(f'Metadata file "{dataset}/manifest.xml": validation failed:', stop=False)
