@@ -77,7 +77,7 @@ class SftpStorage:
             self._conn.makedirs(dname)
         if not self._conn.exists(fname):
             with NamedTemporaryFile(delete=False) as f:
-                f.write(mystring.encode())
+                f.write(mystring)
             self._conn.put(f.name, fname)
             os.unlink(f.name)
 

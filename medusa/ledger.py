@@ -16,11 +16,11 @@ class Ledger:
         self._users = {}
         # todo: use local cache
         for d in reversed(self.list(check=False)):
-           if d['Prev'] == 'None' or self.verify(d):
-               if 'AddUser' in d.keys():
+            if d['Prev'] == 'None' or self.verify(d):
+                if 'AddUser' in d.keys():
                     self._users[d['AddUser']] = {'Key': d['Key'], 'Name' : d['Name']}
         print('Initialized ledger.')
-        print(f'Users: {self._users.keys()}')
+        # print(f'Users: {self._users.keys()}')
 
     def log_insert(self, new_hash):
         '''Register a new dataset'''
