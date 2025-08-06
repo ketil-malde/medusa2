@@ -17,4 +17,12 @@ def get_config():
     if 'MDZUSERNAME' in os.environ: config['username'] = os.environ['MDZUSERNAME']
     if 'MDZKEY' in os.environ: config['rsakey'] = os.environ['MDZKEY']
 
+    defaultrsa = os.path.expanduser('~/.ssh/id_rsa')
+    if 'rsakey' not in config and os.path.exists(defaultrsa):
+        config['rsakey'] = defaultrsa
+        print('RSA key not specified in config, using default')
+
+    if 'rsakey' not in config or not os.path.exists(config['rsakey']):
+        print('Warning: no RSA key found.')
+
     return config
