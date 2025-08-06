@@ -28,6 +28,6 @@ def error(string, stop=True):
     print(f'{FAIL}Error:{ENDC} {string}')
     if stop: exit(-1)
 
-def warn(string, stop=True):
+def warn(string, stop=False):
     print(f'{WARN}Warning:{ENDC} {string}')
     if stop: exit(-1)

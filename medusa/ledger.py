@@ -1,4 +1,4 @@
-from medusa.util import error
+from medusa.util import error, warn
 
 import json
 from datetime import datetime
@@ -16,11 +16,11 @@ class Ledger:
         self._users = {}
         # todo: use local cache
         for d in reversed(self.list(check=False)):
-            if d['Prev'] != 'None':
-                self.verify(d)
-            if 'AddUser' in d.keys():
-                self._users[d['AddUser']] = {'Key': d['Key'], 'Name' : d['Name']}
+           if d['Prev'] == 'None' or self.verify(d):
+               if 'AddUser' in d.keys():
+                    self._users[d['AddUser']] = {'Key': d['Key'], 'Name' : d['Name']}
         print('Initialized ledger.')
+        print(f'Users: {self._users.keys()}')
 
     def log_insert(self, new_hash):
         '''Register a new dataset'''
@@ -62,7 +62,7 @@ class Ledger:
             msg = self._store.gets(cur)
             log_entry = json.loads(msg)
             if check and not self.verify(log_entry):
-                error('Incorrect signature!')
+                error(f'Verification failed: {cur}!')
             # else:
             #    print('Signature OK')
             res.append(log_entry)
@@ -87,5 +87,9 @@ class Ledger:
             pkey = PublicKey.from_string(self._users[uid]['Key'])
             pkey.verify(json.dumps(msg).encode(), bytes.fromhex(sig))
         except InvalidSignatureException:
+            warn(f'Signature check failed for user {uid}.')
+            return False
+        except KeyError:
+            warn(f'Signature by unknown user {uid}.')
             return False
         return True
