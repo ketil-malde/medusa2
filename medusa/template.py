@@ -1,0 +1,72 @@
+import os
+from medusa.util import get_hash
+
+def create_template(dirname):
+    objs = []
+    for f in os.listdir(dirname):
+        if f == 'manifest.xml':
+            continue
+        try:
+            o = {}
+            with open(dirname + '/' + f, 'r') as fh:
+                o['sha256'] = get_hash(fh)
+            o['mimetype'] = 'application/octet-stream'
+            o['path'] = f
+            objs.append(o)
+        except Exception as e:
+            print(f'Processing {f} failed: {e}')
+
+    with open(f'{dirname}/manifest.xml', 'w') as f:
+        f.write(header())
+        f.write(description())
+        f.write(provenance())
+        f.write(objects(objs))
+        f.write(footer())
+
+def header(name='...', date='...', author='...', cls=None):
+    myclass = '' if cls is None else f' class="{cls}"'
+    return f'''<manifest name="{name}" created="{date}" author="{author}"{myclass} >
+  <!-- name is an arbitrary string, dates should be ISO format, person
+  is a valid email(?), and class gives hints to the validator on
+  what needs to be present -->
+'''
+
+def description():
+    return '''  <description>
+    <!-- Just a textual description.  May contain XML elements
+         referring to specific types of information (including other
+         datasets).  Valid elements are <species>, <person>, <location> etc. -->
+
+    This is a description of the dataset.
+  </description>
+
+'''
+
+def provenance():
+    return '''  <provenance>
+    <!-- Also text, describing the origins of the data, but with a bit
+         more structure. E.g. you can use <process name="..." version="..." git-hash="..." />
+         or <instrument>....</instrument>.  Automated processing record their actions here. -->
+
+    This is a description of how the data set came to be.
+  </provenance>
+
+'''
+
+def obj(obj):
+    return f'''    <object sha256="{obj['sha256']}"
+            path="{obj['path']}"
+            mimetype="{obj['mimetype']}" />
+'''
+
+def objects(obj_list):
+    return f'''  <objects>
+    <!-- the actual data is listed here -->
+    {"\n".join([obj(o) for o in obj_list])}
+  </objects>
+
+'''
+
+def footer():
+    return '''</manifest>
+'''

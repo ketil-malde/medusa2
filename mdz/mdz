@@ -8,6 +8,7 @@ import argparse
 from medusa.util import error
 from medusa.datasets import Datasets  # , read_ssh_key, read_ssh_pkey
 from medusa.config import get_config, configure
+from medusa.template import create_template
 
 def get_storage(create=False):
     # Read config file
@@ -23,8 +24,8 @@ def initialize(args):
 
 def validate(args):
     '''Validate a dataset'''
-    print(args)
     for f in args.FILE:
+        print(f'Validating "{f}":')
         print(f'Dataset "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
 
 def insert(args):
@@ -70,6 +71,11 @@ def adduser(args):
 
     db.adduser(args.userid, args.username, ssh_pkey)
 
+def create(args):
+    '''Generate a template manifest.xml file'''
+    create_template(args.FILE)
+    print(f'Template created.  Edit {args.FILE}/manifest.xml before "mdz import".')
+
 if __name__ == "__main__":
 
     p = argparse.ArgumentParser(description='Manage Medusa data sets')
@@ -77,7 +83,7 @@ if __name__ == "__main__":
     # ps.default = 'usage'
 
     # Validation
-    val = ps.add_parser('validate', description='Validate a data set')
+    val = ps.add_parser('validate', description='Validate a data set in a directory')
     val.add_argument('FILE', nargs='+', help='data set directories.')
     val.set_defaults(func=validate)
 
@@ -87,7 +93,7 @@ if __name__ == "__main__":
     imp.set_defaults(func=insert)
 
     # Exporting
-    exp = ps.add_parser('export', description='Export datasets into storage')
+    exp = ps.add_parser('export', description='Export datasets from storage')
     exp.add_argument('hashes', nargs='+', help='data set hashes.')
     exp.set_defaults(func=export)
 
@@ -112,6 +118,10 @@ if __name__ == "__main__":
 
     conf = ps.add_parser('configure', description='Configure user and repository information')
     conf.set_defaults(func=configure)
+
+    cre = ps.add_parser('create', description='Generate a template manifest.xml for a dataset.')
+    cre.add_argument('FILE', help='the directory containing the data set')
+    cre.set_defaults(func=create)
 
     # Run it
     if len(sys.argv) <= 1:

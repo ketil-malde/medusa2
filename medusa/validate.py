@@ -15,11 +15,15 @@ def validate_tiff(fh):
     # verify image
     return True
 
+def no_validation(fh):
+    return True
+
 # Table of content validation functions
 validate_file = {
     'text/plain' : validate_text_plain,
     'text/csv'   : validate_csv,
-    'image/tiff' : validate_tiff
+    'image/tiff' : validate_tiff,
+    'application/octet-stream' : no_validation
 }
 
 def get_schema():
@@ -33,8 +37,9 @@ def validate(dataset, quick=False, datatype=None):
     doc = etree.parse(f'{dataset}/manifest.xml')
     schema = get_schema()
     if not schema.validate(doc):
-        print(f'Metadata file "{dataset}/manifest.xml": validation failed')
+        error(f'Metadata file "{dataset}/manifest.xml": validation failed:', stop=False)
         print(schema.error_log)
+        print()
         status = False
         if quick: return False
 
@@ -48,7 +53,7 @@ def validate(dataset, quick=False, datatype=None):
         with open(fname, 'rb') as fh:
             h = get_hash(fh)
             if h != fhash:
-                print('ERROR: checksum mismatch for {fname}, got {h}, wanted {fhash}!')
+                error(f'Checksum mismatch for {fname}, got {h}, wanted {fhash}!', stop=False)
                 status = False
                 if quick: return False
             else:
