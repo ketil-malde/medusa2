@@ -60,9 +60,10 @@ def obj(obj):
 '''
 
 def objects(obj_list):
+    nlc = '\n'
     return f'''  <objects>
     <!-- the actual data is listed here -->
-    {"\n".join([obj(o) for o in obj_list])}
+    {nlc.join([obj(o) for o in obj_list])}
   </objects>
 
 '''
