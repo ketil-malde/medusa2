@@ -40,9 +40,6 @@ class Datasets:
         # verify metadata file
         if not os.path.exists(dataset):
             error(f'No such directory: {dataset}.')
-        # validate dir
-        if not validate(dataset, quick=True):
-            error(f'Validation failed for {dataset}.')
 
         # skip if already exists
         with open(f'{dataset}/manifest.xml', 'r') as fh:
@@ -50,6 +47,10 @@ class Datasets:
         if self._store.exists(myhash):
             print(f'Dataset {dataset} already registered.')
             return myhash
+
+        # validate dir
+        if not validate(dataset, quick=True):
+            error(f'Validation failed for {dataset}.')
 
         # iterate over all objects and store them
         doc = etree.parse(f'{dataset}/manifest.xml')
