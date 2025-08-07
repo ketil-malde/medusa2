@@ -1,7 +1,7 @@
 import medusa.util as util
 from medusa.util import error
 
-from os import path, makedirs, symlink
+from os import path, makedirs, symlink, listdir
 import shutil
 
 class FileStorage:
@@ -31,6 +31,13 @@ class FileStorage:
     def exists(self, fhash):
         fname = path.join(self._repo, self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
         return path.exists(fname)
+
+    def expand_prefix(self, fhash):
+        ps = list(self.hash2dir(fhash))
+        for a in range(len(ps)):
+            d = path.join(self._repo, *ps[:a + 1])
+            if not path.isdir(d): return []
+        return [f for f in listdir(d) if f.startswith(fhash)]
 
     def put(self, filename, verify_exists=True):
         '''Put an object in the repository, returning its hash'''

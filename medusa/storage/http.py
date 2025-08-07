@@ -1,4 +1,5 @@
 import requests
+from medusa.util import error
 
 class HttpStorage:
     '''Implements Storage as a REST service'''
@@ -15,6 +16,9 @@ class HttpStorage:
         with open(filename, 'rb') as payload:
             r = requests.post(self._repo + 'put/', data=payload)
         return r.content.decode()
+
+    def expand_prefix(self, fhash):
+        error('HTTP backend cannot expand hash prefixes.')
 
     def get(self, fhash, fname):
         '''Get object associated with fhash'''

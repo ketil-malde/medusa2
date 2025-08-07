@@ -66,6 +66,15 @@ class Datasets:
         return myhash
 
     def export(self, dhash, dname=None):
+        if len(dhash) < 64:
+            hs = self._store.expand_prefix(dhash)
+            if len(hs) == 1:
+                dhash = hs[0]
+            elif len(hs) == 0:
+                error(f'Hash prefix {dhash} not found.')
+            else:
+                nl = '\n'
+                error(f'Hash prefix {dhash} is ambiguous:{nl}{nl.join([hs])}.')
         if not self._store.exists(dhash):
             error(f'Hash {dhash} not found in repository.')
         else:

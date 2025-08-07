@@ -46,6 +46,13 @@ class SftpStorage:
         fname = os.path.join(self.hash2dir(fhash)[0], self.hash2dir(fhash)[1], fhash)
         return self._conn.exists(fname)
 
+    def expand_prefix(self, fhash):
+        ps = list(self.hash2dir(fhash))
+        for a in range(len(ps)):
+            d = os.path.join(*ps[:a + 1])
+            if not self._conn.isdir(d): return []
+        return [f for f in self._conn.listdir(os.path.join(*ps)) if f.startswith(fhash)]
+
     def put(self, filename, verify_exists=True):
         with open(filename, 'rb') as fh:
             fhash = util.get_hash(fh)
