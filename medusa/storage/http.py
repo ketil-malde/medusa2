@@ -18,7 +18,7 @@ class HttpStorage:
         return r.content.decode()
 
     def expand_prefix(self, fhash):
-        error('HTTP backend cannot expand hash prefixes.')
+        return [fhash]
 
     def get(self, fhash, fname):
         '''Get object associated with fhash'''

@@ -34,8 +34,13 @@ def put_object():
 @server.route('/get/<id>', methods=['HEAD'])
 def check_object(id):
     print(f'Testing for {id}')
+    idx = fs.expand_prefix(id)
     if fs.exists(id):
         return 'Object {id} exists', 200
+    elif len(idx) == 1 and fs.exists(idx[0]):
+        return 'Object {id} is a valid prefix for {idx[0]}', 200
+    elif len(idx) > 1:
+        return 'Prefix {id} is ambiguous', 404
     else:
         return 'Object {id} does not exist', 404
 
@@ -46,12 +51,18 @@ def get_object(id):
 
     print(f'Requesting {id}')
     if fs.exists(id):
-        tmpfile = '/tmp/mdztmpfile'
-        try:
-            remove(tmpfile)
-        except Exception:
-            pass
-        fs.get(id, fname=tmpfile)
-        return flask.send_file(tmpfile, as_attachment=False)
+        idx = id
     else:
-        return f'Object {id} not found.', 404
+        ids = fs.expand_prefix(id)
+        if len(ids) == 1:
+            idx = ids[0]
+        else:
+            return f'Object {id} not found.', 404
+
+    tmpfile = '/tmp/mdztmpfile'
+    try:
+        remove(tmpfile)
+    except Exception:
+        pass
+    fs.get(idx, fname=tmpfile)
+    return flask.send_file(tmpfile, as_attachment=False)

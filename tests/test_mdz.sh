@@ -36,5 +36,8 @@ MDZREPO=http://localhost:5000/ mdz/mdz log
 MDZREPO=http://localhost:5000/ mdz/mdz export $hash
 tree $hash
 rm -rf $hash
+echo '*** Prefix test ***'
+MDZREPO=http://localhost:5000/ mdz/mdz export ${hash:0:8}
+
 kill %%
 

@@ -74,7 +74,7 @@ class Datasets:
                 error(f'Hash prefix {dhash} not found.')
             else:
                 nl = '\n'
-                error(f'Hash prefix {dhash} is ambiguous:{nl}{nl.join([hs])}.')
+                error(f'Hash prefix {dhash} is ambiguous ({len(hs)} matches):{nl}{nl.join([hs])}.')
         if not self._store.exists(dhash):
             error(f'Hash {dhash} not found in repository.')
         else:
