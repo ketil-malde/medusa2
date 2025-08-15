@@ -58,7 +58,7 @@ class Datasets:
             fname = f'{dataset}/{obj.attrib["path"]}'
             fhash = obj.attrib['sha256']
             newhash = self._store.put(fname)
-            assert newhash == fhash, f'hash mismatch:\n{newhash}\n{fhash}'
+            assert newhash == fhash, f'hash mismatch for {fname}:\n{newhash}\n{fhash}'
 
         myhash = self._store.put(f'{dataset}/manifest.xml')
         # fixme: how to deal with multiple inserts of existing datasets?

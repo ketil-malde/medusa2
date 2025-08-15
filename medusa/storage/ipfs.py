@@ -7,10 +7,16 @@ import urllib
 
 def _cid_to_hex(cid_str):
     """Convert a CID (base58 or base32) to a hex-encoded SHA-256 multihash."""
-    cid = CID.decode(cid_str)
+    try:
+        if isinstance(cid_str, str):
+            cid = CID.decode(cid_str)
+        else:
+            cid = CID.decode(cid_str.decode('utf-8'))
+    except Exception as e:
+        print('Decode failed: ', cid_str, e)
     if cid.hashfun.code != 0x12:
         error(f"CID {cid_str} uses non-SHA-256 hash (code: {cid.hashfun.code})")
-    return cid.digest.hex()
+    return cid.digest.hex()[4:]
 
 def _hex_to_cid(hex_hash):
     """Convert a hex-encoded SHA-256 multihash to a CIDv0."""
@@ -22,8 +28,9 @@ def _hex_to_cid(hex_hash):
     return cid
 
 class IpfsStorage:
-    def __init__(self, config, ipfs_cmd='ipfs'):
+    def __init__(self, config, create=False, ipfs_cmd='ipfs'):
         """Initialize with the path to the ipfs CLI command."""
+        self.head = os.path.expanduser(config['head']) if 'head' in config else os.path.expanduser('~/.mdzhead')
 
         parsed_url = urllib.parse.urlparse(config['repository'])
         if parsed_url.scheme != 'ipfs':
@@ -37,6 +44,12 @@ class IpfsStorage:
             subprocess.run([self.ipfs_cmd, '--version'], capture_output=True, check=True)
         except (subprocess.CalledProcessError, FileNotFoundError):
             error(f'IPFS CLI not found. Ensure \'{ipfs_cmd}\' is installed and in $PATH.')
+
+        if create:
+            with open(self.head, 'w') as h:
+                h.write('None')
+        else:
+            pass
 
     def exists(self, fhash):
         """Check if fhash exists in storage"""
@@ -52,7 +65,7 @@ class IpfsStorage:
             error(f"File {file_path} does not exist")
         try:
             result = subprocess.run(
-                [self.ipfs_cmd, '--api', self.api_multiaddr, 'add', '--cid-version=0', '-Q', file_path],
+                [self.ipfs_cmd, '--api', self.api_multiaddr, 'add', '--raw-leaves', '--cid-version=1', '-Q', file_path],
                 capture_output=True,
                 text=True,
                 check=True
@@ -67,7 +80,7 @@ class IpfsStorage:
         """Put a bytestring object in storage"""
         try:
             result = subprocess.run(
-                [self.ipfs_cmd, '--api', self.api_multiaddr, 'add', '--cid-version=0', '-Q'],
+                [self.ipfs_cmd, '--api', self.api_multiaddr, 'add', '--raw-leaves', '--cid-version=1', '-Q'],
                 capture_output=True,
                 input=mybstring,
                 text=False,
@@ -110,7 +123,9 @@ class IpfsStorage:
             error(f"Failed to read file from IPFS: {e.stderr}")
 
     def gethead(self):
-        pass
-    
+        with open(self.head, 'r') as f:
+            return f.readline()
+
     def sethead(self, myhash):
-        pass
+        with open(self.head, 'w') as f:
+            return f.write(f'{myhash}')
