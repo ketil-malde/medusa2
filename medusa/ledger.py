@@ -37,6 +37,19 @@ class Ledger:
         # check that key is unique, too?
         self.register({'AddUser': userid, 'Name': username, 'Key': pubkey})
 
+    def checkvaliduser(self):
+        '''Check if we are userid and have the correct public key'''
+        if self.userid not in self._users:
+            warn(f'You (user {self.userid}) are not registered in the repository.')
+            return False
+        else:
+            # check our public key
+            pkey = self._users[self.userid]['Key']
+            mykey = self.ssh_key.public_key.to_string()
+            if not pkey == mykey:
+                error(f'Userid {self.userid} exists, but has a different public key!')
+        return True
+
     def log_deluser(self, user):
         '''Revoke a user'''
         # Check that submitting user has rights
@@ -62,7 +75,7 @@ class Ledger:
             msg = self._store.gets(cur)
             log_entry = json.loads(msg)
             if check and not self.verify(log_entry):
-                error(f'Verification failed: {cur}!')
+                error(f'Signature verification failed: {cur}!', stop=False)
             # else:
             #    print('Signature OK')
             res.append(log_entry)

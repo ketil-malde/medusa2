@@ -25,8 +25,11 @@ def initialize(args):
 def validate(args):
     '''Validate a dataset'''
     for f in args.FILE:
-        print(f'Validating "{f}":')
-        print(f'Dataset "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
+        if not os.path.exists(f):
+            error(f'Directory "{f}" does not exist.', stop=False)
+        else:
+            print(f'Validating "{f}":')
+            print(f'Dataset "{f}":\t{"ok" if m.validate(f) else "FAILED"}')
 
 def insert(args):
     '''Add a new dataset to the repository'''

@@ -3,7 +3,7 @@
 # use ledger.py (todo) to manage records
 from medusa.ledger import Ledger
 from medusa.validate import validate
-from medusa.util import error, get_hash
+from medusa.util import error, warn, get_hash
 from medusa.storage import mkstorage
 
 from sshkey_tools.keys import RsaPrivateKey, PublicKey
@@ -41,6 +41,9 @@ class Datasets:
         if not os.path.exists(dataset):
             error(f'No such directory: {dataset}.')
 
+        if not self._ledger.checkvaliduser():
+            print('Aiaia')
+
         # skip if already exists
         with open(f'{dataset}/manifest.xml', 'r') as fh:
             myhash = get_hash(fh)
@@ -54,6 +57,8 @@ class Datasets:
 
         # iterate over all objects and store them
         doc = etree.parse(f'{dataset}/manifest.xml')
+        if not doc.getroot().attrib['author'] == self._config['userid']:
+            warn(f'You are {self._config['userid']} but dataset author is {doc.getroot().attrib['author']}')
         for obj in doc.iter('object'):
             fname = f'{dataset}/{obj.attrib["path"]}'
             fhash = obj.attrib['sha256']
