@@ -52,13 +52,14 @@ class Datasets:
             return myhash
 
         # validate dir
+        print('Validating file objects:')
         if not validate(dataset, quick=True):
             error(f'Validation failed for {dataset}.')
 
         # iterate over all objects and store them
         doc = etree.parse(f'{dataset}/manifest.xml')
         if not doc.getroot().attrib['author'] == self._config['userid']:
-            warn(f'You are {self._config['userid']} but dataset author is {doc.getroot().attrib['author']}')
+            warn(f'You are {self._config["userid"]} but dataset author is {doc.getroot().attrib["author"]}')
         for obj in doc.iter('object'):
             fname = f'{dataset}/{obj.attrib["path"]}'
             fhash = obj.attrib['sha256']
