@@ -76,7 +76,7 @@ def adduser(args):
 
 def create(args):
     '''Generate a template manifest.xml file'''
-    create_template(args.FILE, name=args.name, description=args.description, provenance=args.provenance)
+    create_template(args.FILE, name=args.name, author=args.author, description=args.description, provenance=args.provenance)
     print(f'Template created.  Edit {args.FILE}/manifest.xml before "mdz import".')
 
 if __name__ == "__main__":
@@ -124,6 +124,7 @@ if __name__ == "__main__":
 
     cre = ps.add_parser('create', description='Generate a template manifest.xml for a dataset.')
     cre.add_argument('--name', help='Name for the dataset.', default=None, type=str)
+    cre.add_argument('--author', help='Submitter/author of the dataset.', default=None, type=str)
     cre.add_argument('--description', help='File containing the description.', default=None, type=str)
     cre.add_argument('--provenance', help='File containing the description.', default=None, type=str)
     cre.add_argument('FILE', help='the directory containing the data set')
