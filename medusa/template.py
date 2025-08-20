@@ -1,7 +1,15 @@
 import os
 from medusa.util import get_hash
+import datetime
 
-def create_template(dirname):
+def create_template(dirname, name=None, date=None, author=None, description=None, provenance=None):
+    if not name:
+        name = os.path.basename(dirname)
+    if not date:
+        date = datetime.date.today().strftime('%Y-%m-%d')
+    if not author:
+        pass
+
     objs = []
     for f in os.listdir(dirname):
         if f == 'manifest.xml':
@@ -17,9 +25,9 @@ def create_template(dirname):
             print(f'Processing {f} failed: {e}')
 
     with open(f'{dirname}/manifest.xml', 'w') as f:
-        f.write(header())
-        f.write(description())
-        f.write(provenance())
+        f.write(header(name=name, date=date, author=author))
+        f.write(mkdescription(description))
+        f.write(mkprovenance(provenance))
         f.write(objects(objs))
         f.write(footer())
 
@@ -31,8 +39,12 @@ def header(name='...', date='...', author='...', cls=None):
   what needs to be present -->
 '''
 
-def description():
-    return '''  <description>
+def mkdescription(desc=None):
+    if desc and os.path.exists(desc):
+        with open(desc, 'r') as f:
+            desctxt = f.read()
+        return '  <description>\n' + desctxt + '\n  </description>\n'
+    else: return '''  <description>
     <!-- Just a textual description.  May contain XML elements
          referring to specific types of information (including other
          datasets).  Valid elements are <species>, <person>, <location> etc. -->
@@ -42,8 +54,12 @@ def description():
 
 '''
 
-def provenance():
-    return '''  <provenance>
+def mkprovenance(prov=None):
+    if prov and os.path.exists(prov):
+        with open(prov, 'r') as f:
+            provtxt = f.read()
+        return '  <provenance>\n' + provtxt + '\n  </provenance>\n'
+    else: return '''  <provenance>
     <!-- Also text, describing the origins of the data, but with a bit
          more structure. E.g. you can use <process name="..." version="..." git-hash="..." />
          or <instrument>....</instrument>.  Automated processing record their actions here. -->
