@@ -17,6 +17,7 @@ mdz/mdz init || echo 'Failed, but probably just because the repo already exists?
 
 echo; echo '*** IMPORTING ***'
 mdz/mdz import examples/flowcam1
+mdz/mdz import examples/derived
 
 hash=2b4c723f9da61467dfe49d0fe1d953a32004fa5be5c8a38a02a7c78864595b20
 echo; echo '*** EXPORTING ***'
