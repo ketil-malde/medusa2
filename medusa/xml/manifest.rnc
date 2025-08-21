@@ -51,6 +51,7 @@ description = element description { freetext }
 provenance = element provenance
     { (freetext
     | process
+    | dataset
     | instrument
     | plankton-sample )*
     }
@@ -59,10 +60,13 @@ instrument = element instrument { attribute type { text } }
 
 process = element process
     { attribute name { text }
+    , attribute cmdline { text }?
     , attribute git-hash { xsd:string { pattern = "[a-f0-9]*" length = "40" }}?
     , attribute url { text }?
     , attribute version { text }?
     }
+
+dataset = element dataset { attribute id { hash }, text }
 
 plankton-sample = element plankton-sample
     { (ctd-station | fixed-station)
@@ -87,7 +91,7 @@ freetext = ( text
 	     }
            | element person { text }
            | element location { text }
-	   | element dataset { attribute id { hash }, text }
 	   | element cite { attribute doi { text }?, text? } # maybe author, year etc?
 	   | element date { date }
 	   )*
+
