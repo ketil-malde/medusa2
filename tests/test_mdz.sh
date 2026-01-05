@@ -38,13 +38,14 @@ flask --app mdz/mdzd run &
 sleep 5
 MDZREPO=http://localhost:5000/ mdz/mdz log
 MDZREPO=http://localhost:5000/ mdz/mdz export $hash
-tree $hash
-rm -rf $hash
+tree test_data
+rm -rf test_data
 
 echo '*** HTTP prefix test ***'
 MDZREPO=http://localhost:5000/ mdz/mdz export ${hash:0:8}
-tree ${hash:0:8}
-rm -rf ${hash:0:8}
+# tree ${hash:0:8}
+tree test_data
+rm -rf test_data
 
 kill %%
 
