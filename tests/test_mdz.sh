@@ -22,8 +22,11 @@ mdz/mdz import examples/derived
 hash=2b4c723f9da61467dfe49d0fe1d953a32004fa5be5c8a38a02a7c78864595b20
 echo; echo '*** EXPORTING ***'
 mdz/mdz export $hash
+tree test_data
+# if test_data (name of dataset) exists, store as $hash
+mdz/mdz export $hash
 tree $hash
-rm -rf $hash
+rm -rf $hash test_data
 
 echo; echo '*** LISTING ***'
 mdz/mdz search

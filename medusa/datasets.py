@@ -93,7 +93,14 @@ class Datasets:
                 fhash = obj.attrib['sha256']
                 self._store.get(fhash, fname)
                 # todo: make subdirs?
-            # todo: mv from dhash to dataset name?
+            dsname = doc.getroot().attrib['name']
+
+            # Move dataset to correct name if possible
+            if dname == dhash:
+                if os.path.exists(dsname):
+                    warn(f'Dataset name "{dsname}" exists, exporting to {dhash}')
+                else:
+                    os.rename(dname, dsname)
 
     def delete(self, dhash):
         if not self._store.exists(dhash):
